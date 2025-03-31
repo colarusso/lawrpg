@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<HTML xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
+<HEAD>
+	<title>Law RPG Beginner's Handbook</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+	<meta name="apple-mobile-web-app-capable" content="no" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta property="og:type" content="website"/>
+	<meta property="og:title" content="Law RPG Beginner's Handbook"/>
+	<meta property="og:description" content=""/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta property="og:image" content="../images/d20-law.png"/>
+	<link rel="apple-touch-icon" href="../images/d20.png"/>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+  	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="" MARGINWIDTH="0" MARGINHEIGHT="0"><style>
+	body {
+		font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+	}
+
+	#rawmarkup{
+		display:none;
+	}
+
+	#QandA img{
+		width:100%;
+	}
+
+	div.main{
+		min-width:300px;
+		max-width:650px;
+		margin: 0 auto;
+	padding:0 5px 0 5px;
+		}
+	div.frame{
+		float:left;
+		width:100%;
+		margin:5px 0 5px 0;
+	}
+	div.full{
+		float:left;
+		width:100%;
+	}
+	.button{
+		padding:8px;
+		margin:8px 0 0px 0;
+		width:100%;
+	}
+	div.question_text{
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		color:#ffffff;
+		min-width:30px;
+		background:#5489eb;
+		border-radius: 15px;
+		padding:10px 15px 14px 15px;
+		margin-right:45px;
+	}
+
+	div.question_text a:link, div.question_text a:hover, div.question_text a:active, div.question_text a:visited{ color:#e3fbfc; }
+
+	div.question_arrow{
+		float:left;
+		width: 0;
+		height: 0;
+		border-left: 5px solid transparent;
+		border-right: 10px solid transparent;
+		border-top: 15px solid #5489eb;
+		margin:0 20px;
+	}
+	div.ans_text{
+		float:right;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		color:#000000;
+		min-width:30px;
+		background:#eeeeee;
+		border-radius: 15px;
+		padding:10px 15px 14px 15px;
+		margin-left:45px;
+	}
+	div.ans_arrow{
+		float:right;
+		width: 0;
+		height: 0;
+		border-left: 10px solid transparent;
+		border-right: 5px solid transparent;
+		border-top: 15px solid #eeeeee;
+		margin:0 20px;
+	}
+	div.choices{
+		float:left;
+		width:100%;
+		margin:15px 0 0 0;
+	}
+	div.standard_buttons{
+		float:left;
+		width:100%;
+		margin-top:5px;
+		border-top: 1px solid #ddd;
+		padding-top:12px;
+	}
+	div.credits{
+		float:left;
+		display:none;
+		width:100%;
+		background:#eee;
+		margin:0px 0 15px 0;
+	}
+	div.credit_text{
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		padding:4px 15px 10px 15px;
+	}
+	li.error{
+		list-style-type: none;
+		background:#ffdddd;
+		margin: 10px 0 0 0;
+		padding: 5px;
+	}
+
+	.qpad {
+		float:left;
+		padding:0 15px;
+	}
+
+	a.sbutton {
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		width:48%;
+		background: #eee;
+		border-radius: 8px;
+		padding:10px 0px 12px 0;
+		margin: 0 0 3px 0;
+		border: solid 1px #888;
+		text-align:center;
+		color: #000000;
+		text-decoration: none;
+	}
+
+	a.sbutton:hover, a.sbutton:active {
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		width:48%;
+		background: #ddd;
+		border-radius: 8px;
+		padding:10px 0px 12px 0;
+		margin: 0 0 3px 0;
+		border: solid 1px #888;
+		text-align:center;
+		color: #000000;
+		text-decoration: none;
+	}
+
+	a.qabutton {
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		width:100%;
+		background: #eee;
+		border-radius: 8px;
+		padding:10px 0px 12px 0;
+		margin: 0 0 8px 0;
+		border: solid 1px #888;
+		text-align:left;
+		color: #000000;
+		text-decoration: none;
+	}
+
+	a.qabutton:hover, a.qabutton:active {
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		width:100%;
+		background: #ddd;
+		border-radius: 8px;
+		padding:10px 0px 12px 0;
+		margin: 0 0 8px 0;
+		border: solid 1px #888;
+		text-align:left;
+		color: #000000;
+		text-decoration: none;
+	}
+
+
+	div.xdiv {
+		float:left;
+		width:100%;
+		margin: 0 0 8px 0;
+		background: #eee;
+		border: solid 1px #888;
+		border-radius: 8px;
+	}
+
+	input.xinput {
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+		-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+		box-sizing: border-box;         /* Opera/IE 8+ */
+		float:left;
+		width:100%;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		background: #fff;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+		padding:10px 10px 12px 10px;
+		border: solid 0px #888;
+		border-bottom: solid 1px #888;
+		text-align:left;
+		color: #000000;
+		text-decoration: none;
+	}
+
+	a.xbutton {
+		float:left;
+		width:100%;
+		text-align:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		background: #eee;
+		border-radius: 8px;
+		padding:10px 0px 12px 0px;
+		color: #000000;
+		text-decoration: none;
+	}
+
+	a.xbutton:hover, a.xbutton:active {
+		border-top-left-radius: 0px;
+		border-top-right-radius: 0px;
+		background: #ddd;
+	}
+
+	blockquote{
+        margin:20px 0 0 10px;
+        padding-left: 10px;
+        border-left: solid 3px #828282;
+    }
+
+</style>
+<FORM name="FORM" id="FORM"><div id="conversation" style="margin:15px auto 0 auto;padding:0 15px;max-width:500px"><link rel="stylesheet" type="text/css" href="../css/style.css">
+<a href="../"><div id="icon"></div></a>
+<h2 style="text-align:center;">Law RPG Beginner's Handbook</h2>
+<p>Note: the <a href="https://suffolklitlab.org/events/lit-con/">LITCon2025</a> interactive helper can be found <a href="../">here</a>, and a version of this handbook, suiable for printing a <a href="https://colarusso.github.io/mini-zine/">mini-zine</a>, can be found <a href="law-rpg-beginners-handbook.pdf">here</a>.</p>
+<hr class="light_hr">
+
+<h2 style="text-align:center;margin-bottom: 0;">Contents</h2>
+<ul style="margin: 3px 0 30px 0">
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#ability">Ability Checks</a></li>
+<li><a href="#roles">Roles</a></li>
+<ul>
+	<li><a href="#judge">The Judge</a></li>
+	<li><a href="#finders">Finders of Fact/Law</a></li>
+	<li><a href="#attorneys">Attorneys</a></li>
+</ul>
+<li><a href="#sheets">Case Sheets</a></li>
+<li><a href="#gameplay">Sample Gameplay</a></li>
+<li><a href="#helper">Interactive Helper</a></li>
+</ul>
+<hr class="light_hr">
+
+
+<h2><a href="#intro" name="intro" class="anchor"></a>Introduction</h2>
+In role-playing games (RPGs) players assume the roles of characters in a simulated world. Not just anything goes, however. Outcomes are shaped by structure &amp; rules, the result of a player's actions interacting with an imagined reality. This handbook and the accompanying session at LITCon2025 will show you how to turn legal cases into simple tabletop RPGs by wrapping some rules around legal fact patterns and gathering a group of three or more players.
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2 style="margin-top:10px"><a href="#ability" name="ability" class="anchor"></a>Ability Checks</h2>
+
+When a player takes an action in-game and the outcome is uncertain (e.g., whether an attorney's argument succeeds), RPGs provide users with a way to decide what happens. To keep it fair, these decisions aren't left up to one player, but to keep it believable, easy things need to be easy and hard things hard. The process of checking to see if a player is able to succeed at a task is called an <i>ability check</i>.
+
+<br><br>Here's how it works: (1) figure out how hard the task is—this is called the <i>difficulty class</i> (DC) and will be a number between 1 and 20; (2) have the player taking the action role a 20-sided dice; (3) if their role is greater than or equal to the DC, they succeed! Other RPGs may add nuance by adding additional numbers to a roll, but we'll keep it simple and just use the number that comes up on the dice.
+
+<br><br>There are many ways to determine a DC. We'll talk about some options in a bit, but often you just "look it up." E.g., here's a table you can use.
+
+<br><br>
+<table><tr><td colspan="4">    <b>Typical Difficulty Classes</b>                                </td></tr>
+<tr><td>Very Easy &nbsp;&nbsp; </td><td>3  </td><td>| Hard                           </td><td>13</td></tr>
+<tr><td>Easy                   </td><td>7  </td><td>| Very Hard                      </td><td>17</td></tr>
+<tr><td>Medium                 </td><td>10 </td><td>| Nearly Impossible &nbsp;&nbsp; </td><td>20</td></tr>
+</table>
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2><a href="#roles" name="roles" class="anchor"></a>Roles</h2>
+If we're going to be taking on roles, lets figure out what they are, but first, a word of caution. If you're not familiar with RPGs, things likely won't "click" until you finis the Sample Gameplay. So, you only have to hold on a little longer.
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2><a href="#judge" name="judge" class="anchor"></a>The Judge</h2>
+You may be wondering who gets to decide if a task is "hard," well the Judge of course. In other RPGs this role is often called the Game Master (GM). They are the nearly omniscient narrator of our world, and given our setting they also play the actual judge. That is, they'll explain to everyone what's going on, answering questions and giving instructions that are "above" the game, but they also act like the judge, playing that part as they interact with the attorneys. In-game, however, they don't tend to make rulings. If there are only 3 players, or a ruling requires special knowledge not held by the <i>fractional judges</i> (explained below), they get to pick a DC. Otherwise, they should poll the <i>fractional judges</i> to determine the DC. I'll explain that in a bit.
+
+<br><br>The Judge shapes the gameplay, deciding where to focus. They can be a stickler for procedure or wave their hands, depending on their goals and comfort. They also get to turn up or turn down the detail. Maybe they'll make everyone speak just as they would in court, or suggest folks talk about themselves in the third-person, e.g., "Here's where I'd make an argument about X." If you're playing the judge, you'll get better the more you play. Think of yourself as a teacher guiding a classroom discussion, you're not trying to "win," you're trying to make it a good experience for your players/students.
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2><a href="#finders" name="finders" class="anchor"></a>Finders of Fact/Law</h2>
+
+Hopefully, there are more than 3 people at your table. We want everyone to have a role even if they aren't an attorney or The Judge, here's how: they get to set the DC when called on by The Judge. Say the attorneys have just argued a point, how do we decide how hard success is? We take a poll. After an argument, the Judge asks the other non-attorney players to vote. The math's a bit bit simpler if the question is framed around the non-moving party, e.g., "How many of you think the non-moving party should succeed?" 
+
+<br><br>The Judge tallies those who think the motion should fail (same as the question above), divides it by the total number of voting players and multiplies this by 20 to get the DC. We have an app that can help. 
+
+<br><br>Then you have the movant role their dice. If their roll equals or beats the DC, they succeed!
+
+<br><br>These players can also act as traditional jurors or a panel of judges. If you're simulating a trial or an appellant argument, you might not need to set a lot of DCs. You might turn gameplay into the jury or judges' deliberation after the close of arguments. This makes for great conversations. 
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2 style="margin-top:3px"><a href="#attorneys" name="attorneys" class="anchor"></a>Attorneys</h2>
+Attorneys do what you expect. It's their job to advocate for their side: research case law, make motions, examine witnesses, and persuade the finders of law and fact, but most importantly, they get to roll the dice!
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2><a href="#sheets" name="sheets" class="anchor"></a>Case Sheets</h2>
+The case sheet is how the judge knows what to do. You can simulate a case at various points in its life cycle. Here we'll introduce you to a case sheet and explain how it's used. 
+
+<br><br>Functionally, the sheet acts as a proposed set of jury instructions (the rows in the elements column) and a witness list (subsequent columns), along with expected testimony lined up with its source and the element it aims to bolster or undermine. If you aim to simulate a case from the start, you begin with an empty table.
+
+<br><br>Each attorney is trying to fill in the sheet to build the best possible case for their client. Here's a simplified sample sheet.
+
+<table cellpadding=5px cellspacing=0 style="border:1px solid #555;margin: 20px 0">
+<tr><td style="border-bottom:1px solid #555;border-right:1px solid #555;"><b>Elements</b></td><td style="border-bottom:1px solid #555;text-align:center;"><b>Witness 1</b></td><td rowspan=5 style="border-left:1px solid #555;border-right:1px solid #555;text-align:center;">...</b></td></td><td style="text-align:center;border-bottom:1px solid #555;"><b>Witness <i>n</i></b></td></tr>
+
+<tr><td style="border-bottom:1px solid #555;border-right:1px solid #555;">
+D had a duty to P
+</td><td style="border-bottom:1px solid #555;">
+Store required to keep floors clear.
+</td><td style="border-bottom:1px solid #555;">
+Employees trained on maintaining cleanliness.
+</td></tr>
+
+
+<tr><td style="border-bottom:1px solid #555;border-right:1px solid #555;">
+D breached that duty
+</td><td style="border-bottom:1px solid #555;">  
+D's policy is for nightly cleaning, D was first in store
+</td><td style="border-bottom:1px solid #555;">
+Claims regular floor inspections were done.
+</td></tr>
+
+
+<tr><td style="border-bottom:1px solid #555;border-right:1px solid #555;">
+D breached that duty 
+</td><td style="border-bottom:1px solid #555;">  
+Saw Plaintiff slip on banana peel.
+</td><td style="border-bottom:1px solid #555;">
+Suggests Plaintiff was distracted by phone.
+</td>
+</tr>
+
+
+<tr><td style="border-right:1px solid #555;">
+P suffered actual harm
+</td><td> 
+Plaintiff appeared hurt; called ambulance.
+</td><td>
+Plaintiff seemed okay; walked without help.
+</td>
+</tr>
+
+</table>
+
+<page_break>
+
+Everything, is done in the shadow of the Case Sheet. I tend to break a simulation into three parts/sessions: (1) motion practice; (2) trial; and (3) oral arguments (appeals). In 1 we agree on the elements and witness list (first column and headers) and address things like motions to dismiss. In 2, we fill in the cells below each witness, and in 3 we treat the sheet as the factual record. 
+<br><br>Players prep for gameplay independently before we come together, with the attorneys do most of the hard work. I like to choose a case with an online docket containing at least a complaint and motion to dismiss. I tell folks to start there to figure out their elements and arguments. The docket may go beyond these, but I tell them our reality diverges here. I'm also a big fan of model jury instructions. 
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2><a href="#gameplay" name="gameplay" class="anchor"></a>Sample Gameplay</h2>
+
+Having started with a blank Sheet, the first thing we do is fill in the elements. This may be done largely over email before meeting for arguments. You can then pick up where needed. For example:
+
+<blockquote>
+<p style="margin-top:3px">JUDGE: I see we have agreement on all but one of the elements. Counselor, please explain to me why I should take your instruction on element three over the other side's.
+</p>
+<p>
+    ATTORNEY 1: [Makes an argument. If this is a low-fidelity simulation, the argument doesn't have to be polished, just cogent.]
+</p>
+<p>
+    JUDGE: Attorney Two?
+</p>
+<p>
+    ATTORNEY 2: [counter argument]
+</p>
+<p>
+    JUDGE: [speaking to the rest of the players] How many of you think Attorney Two had the better argument? 
+</p>
+<p>
+    [The rest of the players vote, determining a difficult class.]
+</p>
+<p>
+    JUDGE: The difficulty class is [X]. Roll. 
+</p>
+<p style="margin-bottom:0">
+    ATTORNEY 1: [Rolls a 20-sided dice. If their roll is larger than or equal to the difficulty class, the Judge will implement some version of their suggestion]...
+</p>
+</blockquote>
+
+<br>I cram a lot into a single motion session, playing loosely with sequence (e.g., I effectively start with jury instructions as a way to frame things). Judges may make rulings <i>sua sponte</i> if it serves their goals. Sometimes a case has too many elements, and I just dismiss them. I never dismiss everything, however, as I want there to be a trial. What I'm really trying to do is get the attorneys to tack down what they need to argue about and how they'll get evidence in (the elements and witness lists on our Sheet). Sometimes there's a Daubert challenge, and I make clear that players can always assume the federal rules of procedure & evidence. If there's a Q, they can step back form their character and ask for clarification. For D&amp;D players, think Intelligence Check. 
+
+<br><br>Remember, this is more than collaborative storytelling, it's collaborative sense making. The players are trying to understand a case, the motivations of parties, the strategies or actors. Once we have the elements and witnesses, it's time for trial.
+
+<br><br>I tend to skip any opening statements at trial. Rather, I simply move through each of 
+
+the sheet's columns. Here the Judge has a role in setting difficulty classes. The simulation might go something like this:  
+
+<blockquote>
+<p>
+	JUDGE: We have here a witness for the plaintiff, and it says they would testify to facts A, B, and C on direct. I think that's a hard bargain. You need to roll 13 or above for that all to come in. Roll.  
+</p>
+<p>
+	ATTORNEY 1: [rolls 20-sided dice]
+</p>
+<p>
+	JUDGE: [provides a brief narration of the outcome based on the roll (e.g., if they rolled 13 or above they describe how all of that evidence came in, under 13 how it didn't all come in)] Attorney 2, what did you hope to accomplish on cross? 
+</p>
+<p>
+	ATTORNEY 2: I want to impeach them and get them to break down on the stand while screaming, "You can't handle the truth!"
+</p>
+<p>
+	JUDGE: Woah, alright, you have to roll a 20 for that...
+</p>
+</blockquote>
+
+At the close of trial I tend to let attorneys 
+
+make a brief statement, but nothing prepared. The important thing is that the facts of the case are now part of the record (i.e., the Sheet is all filled out). After closings, we adjourn to the "Jury Room" and run a discussion among the jurors. It helps to appoint a foreperson, and they should have access to the Sheet. Normally, I maintain an online version of the sheet, using a cloud-based spreadsheet. 
+
+<br><br>Once the jury renders its verdict, it's time to identify something to appeal. Here I usually step in to identify something though I you could see what the losing attorney comes up with. I probably picked the case with an issue in mind, so it's mostly about structuring the challenge to focus on that issue and fit as an appeals. Sometimes this means you might have to retcon part of trial (i.e., editing the Sheet), but I think I only had to do this in 1 of 8 cases. 
+
+<br><br>Appeals lends itself to a high-fidelity simulation with no dice roles. I randomly draw three appeals judges from the players. Each attorney is then given ten minutes to speak, during which the judges may pepper them with questions and hypotheticals. 
+
+Immediately following arguments we will break into a whole class discussion between the judges and their clerks (the remaining players). This discussion should be led by the judges. The judges will take their clerk's opinions into consideration when deciding on their vote. The attorneys must be quite during this discussion. 
+
+<br><br>The Judge will still help make things run smoothly and field questions about the world as they come up. For example, there may have been developments relevant to the real-world case and if players know about these, they may ask if they happened in-game too. The Judge can decided on such events. It may also be helpful for them to ask questions. 
+
+<br><br>Of course, you don't have to break things up like this. You could just do motions, or a trial. However, in my experience these sessions have lead to some really great class discussions. Also, it's a lot of fun.
+
+<br><br>After lunch, you'll have the chance to play a short game yourself. Don't worry; there should be folks to help out and you can always consult or interactive helper, link on the back of this booklet. 
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<h2><a href="#helper" name="helper" class="anchor"></a>Interactive Helper</h2>
+Visit <a href="https://lawrpg.org/litcon2025">https://lawrpg.org/litcon2025</a> to access this session's interactive helper. There you will find information for our case as well as guidance on how to run your simulation, included is a copy of this handbook. 
+<br><br>
+If all you need is a dice (of any size), check out <a href="https://colarusso.github.io/dice/">https://colarusso.github.io/dice/</a>
+
+<p style="text-align: center;margin: 15px 0 20px 0;"><a href="#">back to top</a></p>
+
+<div style="float:left;width:100%;margin:15px 0 30px 0;border-top: solid 1px #ddd;padding: 8px 0;font-family: Arial, Helvetica, sans-serif;color: #828282;">April 7, 2025</div>
+</FORM>
+</div></div>
+<script type="text/javascript">
+	//show funtion
+	function show(id) {
+   		if (document.getElementById) { // DOM3 = IE5, NS6
+        	document.getElementById(id).style.display = 'block';
+    	} else {
+        	if (document.layers) {
+            	document.id.display = 'block';
+        	} else {
+                document.all.id.style.display = 'block';
+        	}
+    	}
+	}
+	//hide funtion
+	function hide(id) {
+    	if (document.getElementById) { // DOM3 = IE5, NS6
+        	document.getElementById(id).style.display = 'none';
+    	} else {
+        	if (document.layers) {
+                document.id.display = 'none';
+        	} else {
+                document.all.id.style.display = 'none';
+        	}
+    	}
+	}
+	//show OR hide funtion depends on if element is shown or hidden
+	function shoh(id) {
+    	if (document.getElementById) { // DOM3 = IE5, NS6
+        	if (document.getElementById(id).style.display == "none"){
+            	document.getElementById(id).style.display = 'block';
+        	} else {
+            	document.getElementById(id).style.display = 'none';
+        	}
+    	} else {
+        	if (document.layers) {
+            	if (document.id.display == "none"){
+                	document.id.display = 'block';
+            	} else {
+                	document.id.display = 'none';
+            	}
+        	} else {
+            	if (document.all.id.style.visibility == "none"){
+                	document.all.id.style.display = 'block';
+            	} else {
+                	document.all.id.style.display = 'none';
+            	}
+        	}
+    	}
+	}
+  // EOF
+</script>
+</BODY>
+</HTML>
