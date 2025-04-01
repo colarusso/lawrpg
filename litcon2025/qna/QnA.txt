@@ -5,7 +5,7 @@ Description: <a href="https://bsky.app/profile/davidcolarusso.com" target="_blan
 Before:<link rel="stylesheet" type="text/css" href="https://colarusso.github.io/dm/css/style.css">
 <div id="icon"></div>
 <h2 style="text-align:center;">Law RPG Interactive Helper</h2>
-<p>This tool was built for <a href="https://suffolklitlab.org/events/lit-con/" target="_blank">LITCon2025</a>. Before you start, be sure to <a href="javascript:alert('coming soon')">familiarize yourself with our case</a>. Once you're ready, the Q&A below will help you navigate our simulation in real-time, but you can always consult the <a href="handbook/" target="_blank">Law RPG Beginner's Handbook</a>.</p>
+<p>This tool was built for <a href="https://suffolklitlab.org/events/lit-con/">LITCon2025</a>. Before you start, be sure to <a href="javascript:alert('coming soon')">familiarize yourself with our case</a>. Once you're ready, the Q&A below will help you navigate our simulation in real-time, but you can always consult the <a href="handbook/">Law RPG Beginner's Handbook</a>.</p>
 
 After:
 <script>
