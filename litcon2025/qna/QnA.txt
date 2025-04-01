@@ -79,7 +79,7 @@ A: They succeeded
 A: They failed
 	Q(5.2): Narrate their failure, and note it on the Case Sheet. GOTO:again
 
-Q(again): Choose the next element on the Case Sheet and have the attorneys argue the issue. Decide who you want to have to roll and ask the fraction judges if they think their opponent will prevail. Record the votes below.
+Q(again): Choose the next element on the Case Sheet and have the attorneys argue the issue. Decide who you want to have to roll and ask the fractional judges if they think their opponent will prevail. Record the votes below.
 X[javascript:getDC()]:
 	Q(6.1):Have the attorney roll their D20. To succeed, they need to roll <b><x>DC</x></b> or higher.
 	A[javascript:goto(dice(20,'jroll'))]: I need to roll for them
