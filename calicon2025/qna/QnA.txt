@@ -1,0 +1,106 @@
+Title: Law RPG Interactive Helper
+Author: David Colarusso
+Description: <a href="https://bsky.app/profile/davidcolarusso.com" target="_blank">@davidcolarusso.com</a> built this tool to help folks in the Lap RPG session at LITCon2025.
+<p>Images: <a href="https://www.clipartmax.com/middle/m2H7G6N4K9H7G6H7_png-free-games-drawing-at-getdrawings-20-sided-dice-drawing/" target="_blank">D20</a>, <a href="https://unsplash.com/photos/VrtwS-ayI5U" target="_blank">Dice on map</a>.</p>
+Before:<link rel="stylesheet" type="text/css" href="https://colarusso.github.io/dm/css/style.css">
+<div id="icon"></div>
+<h2 style="text-align:center;">Law RPG Interactive Helper</h2>
+<p>This tool was built for <a href="https://suffolklitlab.org/events/lit-con/">LITCon2025</a>. Before you start, be sure to <a href="javascript:alert('coming soon')">familiarize yourself with our case</a>. Once you're ready, the Q&A below will help you navigate our simulation in real-time, but you can always consult the <a href="handbook/">Law RPG Beginner's Handbook</a>.</p>
+
+After:
+<script>
+function dice(faces,target,combat=0){
+	if (faces==10 ) {
+		number = Math.floor(Math.random()*faces)
+	} else {
+		number = Math.floor(Math.random()*(faces-1))+1
+	}
+	if (number<10) {
+		number = " "+number+" "
+	}
+	document.getElementById('start').value = number;
+	document.getElementById('start').innerHTML = number;
+	document.getElementById('start').innerText = number;
+	return target
+}
+function getDC(){
+	if ((document.getElementById('judge').value-3)>document.getElementById('votes').value) {
+		number = Math.round(20*document.getElementById('votes').value/(document.getElementById('judge').value-3));
+	} else {
+		number = 20
+	}
+	document.getElementById('DC').value = number;
+	document.getElementById('DC').innerHTML = number;
+	document.getElementById('DC').innerText = number;
+}
+</script>
+<style>
+.dice {
+	font-size:80px;
+	line-height:100px;
+	font-weight:600;
+}
+</style>
+
+Q(start): What role are you playing today?
+A: The Judge
+	Q(1.1):GOTO:judge
+A: An attorney
+	Q(1.2):GOTO:attorney
+A: A fractional judge
+	Q(1.3):GOTO:fractional
+
+Q(judge): Great, I'll help you guide gameplay. Before we start, how many people at your table are playing, including yourself?
+X:
+	Q(DC): Do you have two attorneys? 
+	A: Yes
+		Q(2.1.1):GOTO:sim
+	A: No
+		Q(2.1.2): Ask for volunteers, if your cant easily decide on two attorneys, have everyone role their D20. The two people with the highest rolls are the two attorneys. To break any ties, have folks roll again. Once you have your attorneys, click Continue.
+		A: Continue
+			Q(2.1.2.1):GOTO:sim
+
+Q(sim): Today's simulation if of an emergency hearing involving the request for a <a href="https://www.law.cornell.edu/wex/temporary_restraining_order" target="_blank">temporary restraining order</a> (TRO). You should have been provided with a Case Sheet. Your job is to work through the listed elements.
+A: Got it
+	Q(3.1): Have the plaintiff start by explaining why their client(s) face irreparable injury should the court fail to grant the TRO. Ask the Defendants to counter, and make sure both sides have their chance to rebut. Feel free to push back and ask clarifying questions. GOTO:votes
+
+Q(votes): Once they've finished. Poll the fractional judges (everyone but the attorneys and yourself) to see how many of them thing the Defendant should prevail. Record the votes below.
+X[javascript:getDC()]:
+	Q(4.1):Have the Plaintiff roll their D20. To succeed, they need to roll <b><x>DC</x></b> or higher.
+	A[javascript:goto(dice(20,'jroll'))]: I need to roll for them
+	A: They succeeded
+		Q(4.1.2): Narrate their success, and note it on the Case Sheet. GOTO:again
+	A: They failed
+		Q(4.1.3): Narrate their failure, and note it on the Case Sheet. GOTO:again
+
+Q(jroll): <span class="dice"><x>start</x></span>
+A: They succeeded
+	Q(5.1): Narrate their success, and note it on the Case Sheet. GOTO:again
+A: They failed
+	Q(5.2): Narrate their failure, and note it on the Case Sheet. GOTO:again
+
+Q(again): Choose the next element on the Case Sheet and have the attorneys argue the issue. Decide who you want to have to roll and ask the fractional judges if they think their opponent will prevail. Record the votes below.
+X[javascript:getDC()]:
+	Q(6.1):Have the attorney roll their D20. To succeed, they need to roll <b><x>DC</x></b> or higher.
+	A[javascript:goto(dice(20,'jroll'))]: I need to roll for them
+	A: They succeeded
+		Q(6.1.2): Narrate their success, and note it on the Case Sheet. GOTO:again
+	A: They failed
+		Q(6.1.3): Narrate their failure, and note it on the Case Sheet. GOTO:again
+A: We don't have any more arguments
+	Q(6.2): Report back your results. You're all done.
+
+Q(attorney): Are you arguing for the plaintiff or the defendant?
+A: plaintiff
+	Q(7.1): This is an emergency hearing in which you are asking for a <a href="https://www.law.cornell.edu/wex/temporary_restraining_order" target="_blank">temporary restraining order</a> (TRO). You will need to show that: (1) your client faces irreparable injury should the court fail to grant the TRO; and (2) you are likely to succeed on the merits or there is a serious legal question. The full set of elements will be laid our in The Judge's Case Sheet. <br><br> If you have questions about your arguments or the facts, you should consult <a href="javascript:alert('coming soon')">case materials</a>. I suggest starting with the Question & Distill tool.GOTO:dice
+
+A: defendant
+	Q(7.2): This is an emergency hearing in which the plaintiff is asking for a <a href="https://www.law.cornell.edu/wex/temporary_restraining_order" target="_blank">temporary restraining order</a> (TRO). They will need to show that: (1) their client faces irreparable injury should the court fail to grant the TRO; and (2) that they are likely to succeed on the merits or there is a serious legal question. The full set of elements will be laid our in The Judge's Case Sheet. <br><br> If you have questions about your arguments or the facts, you should consult <a href="javascript:alert('coming soon')">case materials</a>. I suggest starting with the Question & Distill tool.GOTO:dice
+
+Q(dice): If you need to roll a D20, go ahead.
+A[javascript:goto(dice(20,'rolled'))]: Roll
+
+Q(rolled): <span class="dice"><x>start</x></span>
+A[javascript:goto(dice(20,'rolled'))]: Roll
+
+Q(fractional): Your job is pretty straightforward. All you have to do is listen to the arguments from both attorneys and vote on which ones should prevail when polled by The Judge. That's it. <br><br> For context, today's simulation is an emergency hearing in which the plaintiff is asking for a <a href="https://www.law.cornell.edu/wex/temporary_restraining_order" target="_blank">temporary restraining order</a> (TRO).
