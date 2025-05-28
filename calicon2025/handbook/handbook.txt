@@ -236,11 +236,11 @@ them with questions and hypotheticals. Immediately following arguments we will b
 Visit https://lawrpg.org/calicon2025 to access this session's interactive helper, or use the QR code below. There you will find information for our case as well as guidance on how to run your simulation. You can also download a copy of this handbook.
 <center>
 <br>
-<img src="https://lawrpg.org/calicon2025/images/lawrpglitconqr.png" width="40%" border="0px"/>
+<img src="https://lawrpg.org/calicon2025/images/lawrpglitconqr.png" width="50%" border="0px"/>
 <br><br>
 If all you need is a dice (of any size), check out
 &nbsp;&nbsp;&nbsp;https://colarusso.github.io/dice/
 </center>
 
-<p class="page_number" style="margin-top:75px">14</p>
+<p class="page_number" style="margin-top:70px">14</p>
 
