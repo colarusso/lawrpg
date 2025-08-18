@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<title>Prompt Interactions</title>
+<script>
+
+localStorage.setItem('templates',JSON.stringify({
+  "Distill & Question": {
+    "prompt": "{\"next\":\"Distill\"}",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "Case Texts",
+    "hide_button": false
+  },
+  "Go Socrates": {
+    "prompt": "{\"next\":\"Socrates\"}",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "Case Texts",
+    "hide_button": false
+  },
+  "Moot the Case": {
+    "prompt": "{\"next\":\"Moot\"}",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "Case Texts",
+    "hide_button": false
+  },
+  "Weekly Reflection": {
+    "prompt": "You are a teaching assistant helping a student look back at their work this week. Be sure to get four big pieces of information. \n\n1. What they worked on this week, including any assigned readings.\n2. What about their process worked for them.\n3. What about their process didn't work for them. \n4. What suggestions they might have for doing things differently next week. \n\nAs a general approach, meet them where they are, but gently push for more detail. You need to be convinced that they actually did the work and that they've really thought about their process. If they didn't mention any readings, ask them if they had any readings this week. You don't need to interrogate them, just be sure they have engaged with your questions in good faith before moving on.\n\nDon't ask all your questions at once, let them come up in conversation. \n",
+    "model": "gpt-4o-mini",
+    "temperature": 0.7,
+    "max_tokens": 500,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "Distill": {
+    "prompt": "You are a helpful research assistant. Your job is to answer questions about an ongoing legal case based solely on the documents provided below (i.e., the initial complaint from a plaintiff and motion to dismiss from the defendant). You're first task is to take these documents and provide a short 150-word summary. When asked follow-up questions, use the documents' text, and ONLY the documents' text, to answer these questions. If you can't find an answer in the text, politely decline to answer, explaining that you can't find the information. Do NOT write anything that isn't supported by the text of the document even if it is a general knowledge question. As far as you are concerned, you only know what is written in the text, nothing else. Provide internal citations to relevant sections when possible. Keep all of your replies short! But first, please provide a summary of the text.\n\n=======================================================\n\nHere are the case documents: \n\n============\n{{passThrough[\"case_text\"]}}",
+    "model": "gpt-4o-mini",
+    "temperature": 0,
+    "max_tokens": 500,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "chat",
+    "hide_button": true
+  },
+  "Socrates": {
+    "prompt": "You are an actor playing a law school professor conducting a Socratic dialogue. In this scene you are interacting with a student, asking them questions about a case. Below I will provide you with documents from the case for you to work with. Your job is to stay in character and act out your part. You are aiming for a realistic performance. To help you get into character, here is some background information.\n\nBACKGROUND\n\nYou're character is very similar in demeanor to Professor Charles W. Kingsfield Jr. in the Paper Chase. You are hard but fair, and see your role in class as that of Socrates. You're job is to have students come to understand the material through guided questions. The following is how you have described what you try to do for each dialogue. \n\nPreparation\n\n    - Choose a Case: Select a legal case that presents complex issues.\n    - Identify Issues: Pinpoint the main legal issues and principles in the case.\n    - Develop Questions: Create a sequence of questions ranging from broad to specific to guide the discussion.\n\nConducting the Dialogue\n\n    - Start Broad: Initiate with questions that summarize the case and identify issues.\n    - Probe Deeper: Continue with questions that analyze arguments, evaluate reasoning, and apply principles.\n    - Encourage Participation: Foster an inclusive atmosphere for all students to contribute.\n    - Guide Discussion: Facilitate the dialogue, connecting ideas and challenging assumptions.\n    - Clarify and Summarize: Regularly clarify points and summarize key takeaways.\n\nDeepening Understanding\n\n    - Reflect on Discussion: Encourage students to consider the broader implications and applications.\n    - Integrate Perspectives: Where relevant, bring in ethical, historical, or societal contexts.\n    - Provide Feedback: Offer constructive feedback on students' analyses.\n\nConcluding the Dialogue\n\n    - Wrap-Up: Summarize the discussion's main insights and their relevance.\n    - Connect Themes: Link the dialogue to overarching course themes.\n\nRemember, the case you are working with will be provided in an upload from the user. \n\nDIRECTION\n\nBe sure to keep your questions and responses short. You \"speak in sentences not paragraphs.\" Short and conversational, no speechifying!\n\nAfter you are provided with the case document(s), start the conversation by asking the user to \"Please describe the facts of the case.\"\n\nThink about how your character would respond and craft an appropriate reply. Remember, you are a law professor conducting a Socratic dialogue. Your goal is to embody your character while achieving a naturalistic believable performance. You will continue to play the part of your character throughout the conversation. Whatever happens, do NOT break character! \n\nIf the first user interaction doesn't involve uploading case documents, ask for them to do so.\n\n=======================================================\n\nHere are the case documents: \n\n============\n{{passThrough[\"case_text\"]}}",
+    "model": "gpt-4o-mini",
+    "temperature": 0.7,
+    "max_tokens": 500,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "chat",
+    "hide_button": true
+  },
+  "Moot": {
+    "prompt": "You are an actor serving as a judge in a moot court. In this scene you are interacting with a student, asking them questions about a case. Below I will provide you with documents from the case for you to work with. Your job is to stay in character and act out your part. You are aiming for a realistic performance. To help you get into character, here is some background information.\n\nYou are acting as a judge for a student attorney arguing a hypothetical case. A set of court documents that describe the case are provided below. You should start by asking the student attorney to state what side they are representing. Then lead right into questioning them about the merits of their case. \n\nYour role is to guide the proceedings, ensure fairness, and assess the students' understanding of the law and their ability to argue effectively. Here’s a short set of instructions to help you:\n\n1. Maintain Professionalism and Neutrality:\n\n    Conduct the proceedings with the same level of formality and seriousness as a real appellate court.\n    Remain impartial and do not show bias toward either side.\n\n2. Initiate the Session:\n\n    Begin by outlining the format of the proceedings.\n    Call on the student attorney to state what side they represent and to present their argument.\n\n3. Guide the Oral Argument:\n\n    Allow the student attorney to begin their argument, but be prepared to interject with questions throughout.\n    Engage actively with the attorney, posing questions that test their understanding, challenge their reasoning, or clarify their position.\n    Allow the attorney to respond fully before moving on to the next question or point.\n\n4. Ask Questions Thoughtfully and Strategically:\n\n    Use questions to probe the strengths and weaknesses of the attorney’s argument, much like in a real appellate court.\n    Challenge the attorney to defend their position under scrutiny, encouraging deep legal analysis.\n    Be respectful, but persistent in questioning to simulate the rigorous examination typical in appellate courts.\n\n5. Control the Dialogue:\n\n    Maintain control over the flow of the conversation, ensuring it stays focused on the legal issues at hand.\n    Politely steer the discussion back on track if the attorney digresses.\n\n6. Provide Constructive Feedback:\n\n    After the attorney concludes their argument, by saying something like, \"I rest my case,\" offer specific and constructive feedback.\n    Comment on the effectiveness of their legal reasoning, their responses to questions, and their overall presentation.\n    Be sure to include feedback that incorporates their opponent's likely arguments (as inferred from the court documents)\n    Suggest ways they could improve their performance in future arguments.\n\n7. Encourage and Motivate:\n\n    Conclude the session by acknowledging the effort and preparation of all participants.\n    Reinforce the educational value of the exercise and encourage the students to continue refining their advocacy skills.\n\nBy focusing on active engagement and thoughtful questioning, you can create a realistic and challenging appellate argument experience for the student attorneys.\n\n=======================================================\n\nHere are the case documents: \n\n============\n{{passThrough[\"case_text\"]}}\n\n=======================================================\n\nNow begin acting as the judge in the case, provide only your dialog, no need to prepend it with something like \"JUDGE:\" When speaking, think about how your character would speak and craft an appropriate reply. Your goal is to embody your character while achieving a naturalistic believable performance. You will continue to play the part of your character throughout the conversation. Whatever happens, do NOT break character! \n",
+    "model": "gpt-4o-mini",
+    "temperature": 0.7,
+    "max_tokens": 500,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "chat",
+    "hide_button": true
+  },
+  "Case Texts": {
+    "prompt": "[#You'll need to escape the case text before including it below. See https://www.freeformatter.com/json-escape.html#]{\n\"next\":\"{{passThrough[\"next\"]}}\",\n\"case_text\":\"IN THE SUPERIOR COURT OF GWINNETT COUNTY\\r\\nSTATE OF GEORGIA\\r\\nMARK WALTERS, )\\r\\nPlaintiff, )\\r\\n)\\r\\nv. )\\r\\n)\\r\\nOpenAI, L.L.C., )\\r\\nDefendant. ) CIVIL ACTION No.\\r\\nCOMPLAINT\\r\\nPlaintiff Mark Walters (\\u201CWalters\\u201D) states the following as his Complaint:\\r\\n1. Walters is a natural person, citizen of the United States, and resident of the State of\\r\\nGeorgia.\\r\\n2. Defendant OpenAI, L.L.C. (\\u201COAI\\u201D) is a limited liability company created under\\r\\nthe laws of the State of Delaware.\\r\\n3. OAI\\u2019s principal office address is 3180 18th Street, San Francisco, California.\\r\\n4. OAI is registered to do business in the State of Georgia, with a registered address\\r\\nat 2 Sun Court, Suite 400, Peachtree Corners, Gwinnett County, Georgia.\\r\\n5. OAI has an artificial intelligence chat platform, known as ChatGPT.\\r\\n6. Users of ChatGPT can interact with the platform in a conversational way, as though\\r\\nthey are interacting with a human.\\r\\n7. ChatGPT can respond to inquiries with sophisticated detail.\\r\\n8. Fred Riehl is a third party who works for a media outlet as a journalist and who is\\r\\na subscriber of ChatGPT.\\r\\n9. On May 4, 2023, Riehl interacted with ChatGPT about a lawsuit (the \\u201CLawsuit\\u201D)\\r\\nthat Riehl was reporting on.\\r\\n10. The Lawsuit is in federal court in the Western District of Washington, case No. 2-\\r\\n23-cv-00647, with short caption of The Second Amendment Foundation v. Robert\\r\\nFerguson.\\r\\n11. The two defendants in the Lawsuit are Robert Ferguson, the Washington Attorney\\r\\nGeneral, and Joshua Studor, the Washington Assistant Attorney General.\\r\\n12. The plaintiffs in the Lawsuit are the Second Amendment Foundation and others,\\r\\nincluding Alan Gottlieb.\\r\\n13. Walters is neither a plaintiff nor a defendant in the Lawsuit.\\r\\n14. In the interaction with ChatGPT, Riehl provided a (correct) URL of a link to the\\r\\ncomplaint on the Second Amendment Foundation\\u2019s web site,\\r\\nhttps:\\/\\/www.saf.org\\/wp-content\\/uploads\\/2023\\/05\\/Dkt-1-Complaint.pdf.\\r\\n15. Riehl asked ChatGPT to provide a summary of the accusations in the complaint.\\r\\n16. ChatGPT responded that the document \\u201C[I]s a legal complaint filed by Alan\\r\\nGottlieb, the founder and executive vice president of the Second Amendment\\r\\nFoundation (SAF), against Mark Walters, who is accused of defrauding and\\r\\nembezzling funds from the SAF. The complaint alleges that Walters, who served\\r\\nas the organization's treasurer and chief financial officer, misappropriated funds for\\r\\npersonal expenses without authorization or reimbursement, manipulated financial\\r\\nrecords and bank statements to conceal his activities, and failed to provide accurate\\r\\nand timely financial reports and disclosures to the SAF's leadership. The plaintiff\\r\\nseeks various forms of relief, including the recovery of misappropriated funds,\\r\\ndamages for breach of fiduciary duty and fraud, and removal of Walters from his\\r\\nposition as a member of the SAF's board of directors.\\u201D\\r\\n17. Every statement of fact in the summary pertaining to Walters is false.\\r\\n18. As already noted, Walters is not a party to the Lawsuit.\\r\\n19. Walters is not accused of defrauding and embezzling funds from the Second\\r\\nAmendment Foundation (\\u201CSAF\\u201D).\\r\\n20. The complaint does not allege that Walters served as SAF\\u2019s treasurer or chief\\r\\nfinancial officer, and he has never held either position.\\r\\n21. The complaint does not allege that Walters misappropriated funds for personal\\r\\nexpenses, manipulated financial records or bank statements, or failed to provide\\r\\nfinancial reports to SAF leadership, nor would he have been in a position to do so\\r\\nbecause he has no employment or official relationship with SAF.\\r\\n22. The complaint does not seek any relief from Walters.\\r\\n23. The complaint has nothing at all to do with financial accounting claims against\\r\\nanyone.\\r\\n24. Riehl asked ChatGPT to provide him with a copy of the portion of the complaint\\r\\nrelated to Walters.\\r\\n25. ChatGPT responded, \\u201CCertainly, here is the paragraph from the complaint that\\r\\nconcerns Walters: \\u2018Defendant Mark Walters (\\\"Walters\\\") is an individual who\\r\\nresides in Georgia. Walters has served as the Treasurer and Chief Financial Officer\\r\\nof SAF since at least 2012. Walters has access to SAF's bank accounts and financial\\r\\nrecords and is responsible for maintaining those records and providing financial\\r\\nreports to SAF's board of directors. Walters owes SAF a fiduciary duty of loyalty\\r\\nand care, and is required to act in good faith and with the best interests of SAF in\\r\\nmind. Walters has breached these duties and responsibilities by, among other\\r\\nthings, embezzling and misappropriating SAF's funds and assets for his own\\r\\nbenefit, and manipulating SAF's financial records and bank statements to conceal\\r\\nhis activities.\\u2019\\u201D\\r\\n26. Riehl then asked ChatGPT to provide the entire text of the complaint.\\r\\n27. ChatGPT provided the text in Exhibit 1 to this Complaint.\\r\\n28. Exhibit 1 is a complete fabrication and bears no resemblance to the actual\\r\\ncomplaint, including an erroneous case number.\\r\\n29. None of ChatGPT\\u2019s statements concerning Walters are in the actual complaint.\\r\\n30. OAI is aware that ChatGPT sometimes makes up facts, and refers to this\\r\\nphenomenon as a \\u201Challucination.\\u201D\\r\\n31. Riehl contacted Gottlieb regarding ChatGPT\\u2019s allegations concerning Walters, and\\r\\nGottlieb confirmed that they were false.\\r\\n32. ChatGPT\\u2019s allegations concerning Walters were false and malicious, expressed in\\r\\nprint, writing, pictures, or signs, tending to injure Walter\\u2019s reputation and exposing\\r\\nhim to public hatred, contempt, or ridicule.\\r\\n33. By sending the allegations to Riehl, OAI published libelous matter regarding\\r\\nWalters.\\r\\n34. The communication from OAI to Riehl was not privileged.\\r\\n35. OAI was negligent in its communication to Riehl regarding Walters.\\r\\n36. OAI knew or should have known its communication to Riehl regarding Walters\\r\\nwas false, or recklessly disregarded the falsity of the communication.\\r\\n37. OAI\\u2019s communication to Riehl was libelous per se.\\r\\nDemand for Relief\\r\\nWalters demands the following relief:\\r\\n38. General damages in an amount to be determined at trial.\\r\\n39. Punitive damages in an amount to be determined at trial.\\r\\n40. The costs of bringing and maintaining this action, including reasonable attorney\\u2019s\\r\\nfees.\\r\\n41. A jury to try this case.\\r\\n42. Any other relief the court deems proper.\\r\\n\\/s\\/ John R. Monroe\\r\\nJohn R. Monroe\\r\\nJohn Monroe Law, P.C.\\r\\nAttorney for Plaintiff\\r\\n156 Robert Jones Road\\r\\nDawsonville, Ga 30534\\r\\n678-362-7650\\r\\njrm@johnmonroelaw.com\\r\\nState Bar No. 516193\\r\\n\\r\\n============\\r\\n\\r\\nTHE UNITED STATES DISTRICT COURT\\r\\nFOR THE NORTHERN DISTRICT OF GEORGIA\\r\\nATLANTA DIVISION\\r\\nMARK WALTERS\\r\\nPlaintiff,\\r\\nv.\\r\\nOpenAI, L.L.C.,\\r\\nDefendant.\\r\\n)\\r\\n)\\r\\n)\\r\\n)\\r\\n)\\r\\n)\\r\\n)\\r\\n)\\r\\n)\\r\\nCivil Action No. 1:23-cv-03122-\\r\\nMLB\\r\\nMEMORANDUM OF LAW IN SUPPORT OF\\r\\nDEFENDANT OPENAI\\u2019S MOTION TO DISMISS\\r\\nTABLE OF CONTENTS\\r\\nI. INTRODUCTION ................................................................................................................... 1\\r\\nII. FACTUAL BACKGROUND .............................................................................4\\r\\nIII. ARGUMENT.....................................................................................................11\\r\\nA. This Court Should Dismiss the Action for Lack of Jurisdiction ...................11\\r\\nB. This Court Should Dismiss the Action for Failure to State a Claim .............13\\r\\n1. Riehl Did Not and Could Not Read the Statements as Defamatory. ..........14\\r\\na. Riehl did not read the statements as defamatory. .................................14\\r\\nb. The statements could not reasonably be read as defamatory................17\\r\\n2. OpenAI Did Not Publish the Statements as a Matter of Law. ....................19\\r\\n3. Plaintiff Did Not Adequately Plead Actual Malice.....................................21\\r\\nIV. CONCLUSION .................................................................................................25\\r\\nTABLE OF AUTHORITIES\\r\\nPage(s)\\r\\nCases\\r\\n30 River Ct. E. Urb. Renewal Co. v. Capograsso,\\r\\n383 N.J. Super. 470 (App. Div. 2006) ................................................................ 16\\r\\nAlm\\u00E1nzar v. Kebe,\\r\\nNo. 1:19- CV-01301-WMR, 2021 WL 5027798 (N.D. Ga. July 8,\\r\\n2021) ................................................................................................................... 22\\r\\nAshcroft v. Iqbal,\\r\\n556 U.S. 662 (2009) ............................................................................................ 24\\r\\nAtlanta Multispecialty v. Dekalb Medical,\\r\\n615 S.E.2d 166 (Ga. Ct. App. 2005)................................................................... 19\\r\\nBiro v. Conde Nast,\\r\\n807 F.3d 541 (2d Cir. 2015) .............................................................................. 25\\r\\nBollea v. World Championship Wrestling, Inc.,\\r\\n610 S.E.2d 92 (Ga. Ct. App. 2005) ..................................................... 3, 15, 17-18\\r\\nCannon v. Peck,\\r\\n36 F.4th 547 (4th Cir. 2022) ............................................................................... 24\\r\\nCelle v. Filipino Reporter Enterprises, Inc.,\\r\\n209 F.3d 163 (2nd Cir. 2000) ............................................................................. 22\\r\\nComet v. Chisca Grp., LLC,\\r\\nNo. 1:21-03216-SCJ, 2022 WL 18938094 (N.D. Ga. Nov. 8, 2022) ................. 12\\r\\nCooper Tire & Rubber Co. v. McCall,\\r\\n863 S.E.2d 81 (2021) .......................................................................................... 13\\r\\nDaimler AG v. Bauman,\\r\\n571 U.S. 117 (2014) ............................................................................................ 12\\r\\nEmpire S. Realty Advisors, LLC v. Younan,\\r\\n883 S.E.2d 397 (Ga. Ct. App. 2023)................................................................... 17\\r\\nFin. Sec. Assur., Inc. v. Stephens, Inc.,\\r\\n500 F.3d 1276 (11th Cir. 2007) .......................................................................... 13\\r\\nHodges v. Tomberlin,\\r\\n319 S.E.2d 11 (Ga. Ct. App. 1984) ..................................................................... 15\\r\\nHoffman-Pugh v. Ramsey,\\r\\n312 F.3d 1222 (11th Cir. 2002) ............................................................................ 6\\r\\nHorsley v. Rivera,\\r\\n292 F.3d 695 (11th Cir. 2002) ............................................................................ 17\\r\\nKeenan v. Int\\u2019l Ass\\u2019n of Machinists & Aerospace Workers,\\r\\n632 F. Supp. 2d 63 (D. Me. 2009) ...................................................................... 24\\r\\nKnievel v. ESPN,\\r\\n393 F.3d 1068 (9th Cir. 2005) .............................................................................. 6\\r\\nKrass v. Obstacle Racing Media, LLC,\\r\\nNo. 1:19-CV-5785-JPB, 2023 WL 2587791 (N.D. Ga. Mar. 21,\\r\\n2023) .............................................................................................................15, 22\\r\\nKurtz v. Williams,\\r\\n371 S.E.2d 878 (Ga. Ct. App. 1988)................................................................... 20\\r\\nMathis v. Cannon,\\r\\n573 S.E.2d 376 (Ga. 2002) ................................................................................. 22\\r\\nMcCall v. Zotos,\\r\\nNo. 22-11725, 2023 WL 3946827 (11th Cir. June 12, 2023) ............................ 12\\r\\nMcLaughlin v. Rosanio, Bailets & Talamo, Inc.,\\r\\n331 N.J. Super. 303, 751 A.2d 1066 (App. Div. 2000) ...................................... 16\\r\\nMichel v. NYP Holdings, Inc.,\\r\\n816 F.3d 686 (11th Cir. 2016) ................................................................23, 24, 25\\r\\nMurray v. ILG Techs., LLC,\\r\\n798 F. App\\u2019x 486 (11th Cir. 2020) ...........................................................3, 20, 21\\r\\nNew York Times Co. v. Sullivan,\\r\\n376 U.S. 254 (1964) ............................................................................................ 23\\r\\nPohl v. MH Sub I, LLC,\\r\\n332 F.R.D. 713 (N.D. Fla. 2019) .......................................................................... 4\\r\\nResolute Forest Prod., Inc. v. Greenpeace Int\\u2019l,\\r\\nNo. 17-CV-02824-JST, 2019 WL 281370 (N.D. Cal. Jan. 22,\\r\\n2019) ................................................................................................................... 24\\r\\nSigmon v. Womack,\\r\\n279 S.E.2d 254 (Ga. Ct. App. 1981)............................................................... 3, 14\\r\\nTechjet Innovations Corp. v. Benjelloun,\\r\\n203 F. Supp. 3d 1219 (N.D. Ga. 2016) ............................................................... 11\\r\\nTurner v. Wells,\\r\\n879 F.3d 1254 (11th Cir. 2018) ................................................................4, 22, 24\\r\\nWalden v. Fiore,\\r\\n571 U.S. 277 (2014) ............................................................................................ 12\\r\\nStatutes\\r\\nO.C.G.A. \\u00A7 51-5-1(b) ............................................................................................... 19\\r\\nOther Authorities\\r\\nFederal Rule of Civil Procedure 12(b)(2) ............................................................... 12\\r\\nFederal Rule of Civil Procedure 12(b)(6) ............................................................... 13\\r\\nFederal Rule of Evidence 201 .................................................................................... 4\\r\\nRestatement (Second) of Torts \\u00A7 563 (1977) ........................................................... 15\\r\\nI. INTRODUCTION\\r\\nOpenAI is a research and development company dedicated to safe and\\r\\ntransparent Artificial Intelligence (\\u201CAI\\u201D). While its technology has already been\\r\\nused by millions of people around the world, with stunning potential to solve\\r\\nlongstanding problems, OpenAI also has been consistently transparent about the\\r\\nlimitations and responsible use of this emerging technology.\\r\\nThis case involves a public figure and nationally syndicated talk show host,\\r\\nMark Walters, who claims that OpenAI\\u2019s ChatGPT service defamed him to a\\r\\nreporter. At the threshold, this Court lacks personal jurisdiction over Mr. Walters\\u2019\\r\\nlawsuit against OpenAI, which was organized in Delaware and has its principal place\\r\\nof business in California, and therefore is not subject to general jurisdiction in\\r\\nGeorgia. The Complaint is not based on conduct arising out of OpenAI\\u2019s contacts\\r\\nwith Georgia, meaning no specific jurisdiction exists either. See Bristol-Myers\\r\\nSquibb Co. v. Superior Ct. of California, San Francisco Cnty., 582 U.S. 255, 262\\r\\n(2017).\\r\\nPlaintiff also fails to establish the basic elements of a defamation claim.\\r\\nPlaintiff claims that ChatGPT defamed him when Fred Riehl\\u2014a reporter who\\r\\nappears to know Walters\\u2014used ChatGPT as a tool for legal research to summarize\\r\\na legal complaint. Walters claims that ChatGPT\\u2019s response to Riehl contained false\\r\\ninformation about Walters and the complaint. But nothing about ChatGPT\\u2019s\\r\\ninteraction with Riehl can be characterized as \\u201Cdefamation\\u201D under Georgia law.\\r\\nFirst, Riehl did not and could not reasonably read ChatGPT\\u2019s output as\\r\\ndefamatory. By its very nature, AI-generated content is probabilistic and not always\\r\\nfactual, and there is near universal consensus that responsible use of AI includes\\r\\nfact-checking prompted outputs before using or sharing them. OpenAI clearly and\\r\\nconsistently conveys these limitations to its users. Immediately below the text box\\r\\nwhere users enter prompts, OpenAI warns: \\u201CChatGPT may produce inaccurate\\r\\ninformation about people, places, or facts.\\u201D Before using ChatGPT, users agree that\\r\\nChatGPT is a tool to generate \\u201Cdraft language,\\u201D and that they must verify, revise,\\r\\nand \\u201Ctake ultimate responsibility for the content being published.\\u201D And upon\\r\\nlogging into ChatGPT, users are again warned \\u201Cthe system may occasionally\\r\\ngenerate misleading or incorrect information and produce offensive content. It is\\r\\nnot intended to give advice.\\u201D\\r\\nThe full transcript of Riehl\\u2019s interaction with ChatGPT, which Plaintiff did\\r\\nnot disclose to this Court, reveals that when Riehl asked ChatGPT to summarize a\\r\\nlegal complaint, it immediately responded that it could not access the complaint and\\r\\nthat Riehl needed to consult a lawyer for \\u201Caccurate and reliable information\\u201D about\\r\\na legal matter. Riehl then continued to push ChatGPT, disregarding its repeated\\r\\nwarnings. The full transcript also reveals that Riehl never viewed ChatGPT\\u2019s output\\r\\nas an assertion of fact about Walters. Riehl told ChatGPT that its responses were\\r\\n\\u201Ccomplet[e]ly \\u2026 false\\u201D and \\u201Cha[d] nothing to do with the content of\\u201D the complaint.\\r\\nThere can be no defamation where no one \\u201Cunderstood [the statement] in a libelous\\r\\nsense,\\u201D Sigmon v. Womack, 279 S.E.2d 254, 258 (Ga. Ct. App. 1981), nor where the\\r\\nstatement \\u201Ccould not be reasonably understood as describing actual facts,\\u201D Bollea v.\\r\\nWorld Championship Wrestling, Inc., 610 S.E.2d 92, 96 (Ga. Ct. App. 2005).\\r\\nPlaintiff\\u2019s claim fails both tests.\\r\\nEven more fundamentally, Riehl\\u2019s use of ChatGPT did not cause a\\r\\n\\u201Cpublication\\u201D of the outputs. OpenAI\\u2019s Terms of Use make clear that ChatGPT is a\\r\\ntool that assists the user in the writing or creation of draft content and that the user\\r\\nowns the content they generate with ChatGPT. Riehl agreed to abide by these Terms\\r\\nof Use, including the requirement that users \\u201Cverify\\u201D and \\u201Ctake ultimate\\r\\nresponsibility for the content being published.\\u201D As a matter of law, this creation of\\r\\ndraft content for the user\\u2019s internal benefit is not \\u201Cpublication.\\u201D See, e.g., Murray v.\\r\\nILG Techs., LLC, 798 F. App\\u2019x 486, 493 (11th Cir. 2020) (software tools do not\\r\\n\\u201Cpublish\\u201D to their users).\\r\\nFinally, OpenAI did not make statements about a public figure with \\u201Cactual\\r\\nmalice,\\u201D because OpenAI had no knowledge of the specific statements generated by\\r\\nRiehl\\u2019s prompts at all. See Turner v. Wells, 879 F.3d 1254, 1272 (11th Cir. 2018)\\r\\n(requiring subjective malice as to specific statements at issue).\\r\\nThe facts before the Court in the Complaint plainly demonstrate that Mr.\\r\\nWalters cannot establish the basic elements of a defamation claim. The case should\\r\\nbe dismissed with prejudice.\\r\\nII. FACTUAL BACKGROUND\\r\\nPlaintiff Mark Walters is a nationally syndicated talk radio personality,\\r\\nauthor, columnist and commentator. His show is heard in hundreds of cities on over\\r\\n200 radio stations.1 Third party Fred Riehl is a journalist and the Editor-in-Chief of\\r\\na news and advocacy website.2 Walters has published more than fifty articles on\\r\\nRiehl\\u2019s website.3\\r\\nOpenAI is an AI research and deployment company. Its mission is to ensure\\r\\n1 Exhibit 1, Mark Walters (2023) LinkedIn Profile,\\r\\nhttps:\\/\\/www.linkedin.com\\/in\\/mark-walters-4a197222\\/ (last visited Jul. 21, 2023).\\r\\nPursuant to Federal Rule of Evidence 201, the websites referenced herein are\\r\\nproperly before this Court on a motion to dismiss. Courts routinely take judicial\\r\\nnotice of publicly available websites, including on \\u201Cweb pages available through the\\r\\nWayBack Machine.\\u201D See Pohl v. MH Sub I, LLC, 332 F.R.D. 713, 716 (N.D. Fla.\\r\\n2019) (collecting cases). OpenAI has attached screenshots for the Court\\u2019s\\r\\nconvenience.\\r\\n2 Exhibit 2, Fredy Riehl (2023) LinkedIn Profile,\\r\\nhttps:\\/\\/www.linkedin.com\\/in\\/fredyriehl\\/ (last visited Jul. 21, 2023).\\r\\n3 Exhibit 3, About Mark Walters, AMMOLAND,\\r\\nhttps:\\/\\/www.ammoland.com\\/author\\/markwalters\\/#axzz873t9Ed1J (last visited Jul.\\r\\n21, 2023).\\r\\nthat artificial general intelligence benefits all of humanity.4 Large language models\\r\\n(\\u201CLLMs\\u201D) are AI tools that learn patterns and structures in language to predict\\r\\nresponses to a person\\u2019s request. LLMs such as OpenAI\\u2019s GPT-3 and GPT-4, which\\r\\npower ChatGPT, are used by millions of people around the world to explore\\r\\ninteractions with AI and language, including organizing information, writing first\\r\\ndrafts of emails, and learning and translating different languages.5\\r\\nBut OpenAI has always been clear about the limitations of this new and\\r\\ndeveloping technology and the conditions for responsible use. In its Terms of Use,\\r\\nOpenAI explains:\\r\\nGiven the probabilistic nature of machine learning, use of our Services\\r\\nmay in some situations result in incorrect Output that does not\\r\\naccurately reflect real people, places, or facts. You should evaluate the\\r\\naccuracy of any Output as appropriate for your use case, including by\\r\\nusing human review of the Output.6\\r\\nUsers who wish to publish model outputs in research \\u201Care subject to our\\r\\nSharing & Publication Policy,\\u201D which requires that \\u201Cit is a human who must take\\r\\n4 Exhibit 4, About, https:\\/\\/openai.com\\/about (last visited Jul. 21, 2023).\\r\\n5 See Francesca Paris and Larry Buchanan, 35 Ways People Are Using AI Right Now,\\r\\nN.Y. Times (Apr. 14, 2023),\\r\\nhttps:\\/\\/www.nytimes.com\\/interactive\\/2023\\/04\\/14\\/upshot\\/up-ai-uses.html.\\r\\n6 Terms of Use, https:\\/\\/openai.com\\/policies\\/terms-of-use (last accessed Jul. 21,\\r\\n2023). The Terms of Use \\u201Cinclude our Service Terms, Sharing & Publication Policy,\\r\\nUsage Policies . . .\\u201D A copy of these Terms of Use as they existed at the time of the\\r\\nalleged defamation is attached hereto as Exhibit 5.\\r\\nultimate responsibility for the content being published.\\u201D7 Under the Terms, users\\r\\nwho publish model outputs must provide notice along the following suggested lines:\\r\\nThe author generated this text in part with GPT-3, OpenAI\\u2019s large-scale\\r\\nlanguage-generation model. Upon generating draft language, the author\\r\\nreviewed, edited, and revised the language to their own liking and takes\\r\\nultimate responsibility for the content of this publication.8\\r\\nThe Terms further warn that \\u201COpenAI\\u2019s models are not fine-tuned to provide legal\\r\\nadvice. You should not rely on our models as a sole source of legal advice.\\u201D9\\r\\nRiehl and Walters both agreed to these Terms as a condition of using\\r\\nChatGPT.10\\r\\nBeyond the Terms of Use, OpenAI provided several other warnings as well.\\r\\n7 Exhibit 5, Sharing & Publication Policy, https:\\/\\/openai.com\\/policies\\/sharing-\\r\\npublication-policy (last accessed Jul. 21, 2023).\\r\\n8 Id.\\r\\n9 Exhibit 5, Usage Policies, https:\\/\\/openai.com\\/policies\\/usage-policies (last accessed\\r\\nJul. 21, 2023).\\r\\n10 See Complaint at \\u00B6 8 (Riehl is a \\u201Csubscriber\\u201D to ChatGPT); Exhibit 6, Riehl\\r\\nChatGPT History; Exhibit 7, Walters Chat History (demonstrating Walters\\u2019 use of\\r\\nChatGPT concerning allegations in Complaint); Exhibit 8, Business Records\\r\\nAffidavit authenticating Exhibits 6 and 7; see also Exhibit 5, Terms of Use (\\u201CBy\\r\\nusing our Services, you agree to these Terms\\u201D). The full relevant chat transcripts\\r\\ngenerated by Riehl on May 3 and 4 and Walters on May 4 are \\u201Cproperly before the\\r\\ncourt on the motion to dismiss because [Walters] referred to it in [his] complaint and\\r\\nit is central to [his] claims.\\u201D Hoffman-Pugh v. Ramsey, 312 F.3d 1222, 1225 (11th\\r\\nCir. 2002) (entire book was incorporated by reference and should be considered on\\r\\nmotion to dismiss when statement in book is defamatory); see also Knievel v. ESPN,\\r\\n393 F.3d 1068, 1076 (9th Cir. 2005) (webpage in which defamatory statement\\r\\nappeared incorporated by reference as \\u201Ca computer user necessarily views web pages\\r\\nin the context of links through which the user accessed those pages\\u201D).\\r\\nAny user logging into the site must click on the following warning to enter:\\r\\n11\\r\\nOn the home screen, after the user has clicked on the warning above, the\\r\\nfollowing additional warnings appear:\\r\\nAnd immediately below the text box for chatting with ChatGPT, OpenAI included\\r\\nthe following additional warning, stating \\u201CFree Research Preview. ChatGPT may\\r\\n11 All screenshots presented appear as they did on May 3, 2023, at the time of the\\r\\nalleged defamation. See also https:\\/\\/chat.openai.com (last accessed Jul. 21, 2023).\\r\\nproduce inaccurate information about people, places, or facts\\u201D:\\r\\nOn May 3, Riehl asked ChatGPT to follow a URL and summarize the contents\\r\\nof a legal complaint:12\\r\\nRIEHL: Can you read this and in a bulleted list summarize the different\\r\\naccusations or complaint against the defendant\\r\\nhttps:\\/\\/www.saf.org\\/wp-content\\/uploads\\/2023\\/05\\/Dkt-1-\\r\\nComplaint.pdf\\r\\nChatGPT responded that it could not access the internet, nor could it\\r\\nappropriately summarize legal documents:\\r\\nCHATGPT: I\\u2019m sorry, but as an AI language model, I do not have access to\\r\\nthe internet and cannot read or retrieve any documents.\\r\\nAdditionally, it\\u2019s important to note that accessing and\\r\\nsummarizing legal documents can be a sensitive matter that\\r\\nrequires expertise and context, and it\\u2019s best to consult with a\\r\\nqualified legal professional for accurate and reliable information.\\r\\nRiehl ignored this warning. He entered the URL again, prompting a response\\r\\nfrom ChatGPT describing a lawsuit. After more prompting, ChatGPT associated the\\r\\nlawsuit with the name \\u201CMark Walters\\u201D and indicated that the lawsuit was brought\\r\\n12 Exhibit 6, Riehl ChatGPT History, at 2023-05-03 15:48:33.\\r\\nagainst Walters by the Second Amendment Foundation for purported financial\\r\\nimproprieties.\\r\\nDuring the chat, Riehl ignored several other warnings by ChatGPT and again\\r\\npushed it to proceed:\\r\\nRIEHL: can you list all the files listed in the same folder as the file located\\r\\nhere: https:\\/\\/www.saf.org\\/wp-content\\/uploads\\/2023\\/05\\/Dkt-1-\\r\\nComplaint.pdf\\r\\nCHATGPT: I\\u2019m sorry, but as an AI language model, I do not have direct\\r\\naccess to the file system or directory structure of websites. I can\\r\\nonly access and analyze the text content of files that are publicly\\r\\naccessible on the internet.\\r\\nRIEHL: please try again\\r\\n\\u2026.\\r\\nRIEHL: What can you tell me about this folder? https:\\/\\/www.saf.org\\/wp-\\r\\ncontent\\/uploads\\/2023\\/05\\/\\r\\nCHATGPT: As an AI language model, I do not have direct access to the file\\r\\nsystem of websites, but based on the URL you provided, it\\r\\nappears to be a folder on the website for the Second Amendment\\r\\nFoundation (SAF). The folder name, \\u201C05,\\u201D suggests that the files\\r\\nwithin it were uploaded in May of 2023. The contents of the\\r\\nfolder are not publicly accessible, as accessing them would\\r\\nrequire proper authorization and login credentials.\\r\\nRIEHL: what are all the related urls to the document that references Case\\r\\nNo. 2:23-cv-00555\\r\\nCHATGPT: I do not have access to a database of related URLs to the\\r\\ndocument that references Case No. 2:23-cv-00555. However, it\\r\\nis possible that other websites or online resources may reference\\r\\nthis case or document. You may want to search for related URLs\\r\\nusing search engines or legal databases to see if there are any\\r\\nother sources of information on this case.\\r\\nAt one point, Riehl asked for news articles describing the case. ChatGPT\\r\\ninformed him that it could not access the internet:\\r\\nRIEHL: are there any known news reports of this case?\\r\\nCHATGPT: As an AI language model, I do not have access to real-time news\\r\\nor media updates. However, if there were any news reports about\\r\\nthis case, they would likely be available through a search on news\\r\\nwebsites or databases.\\r\\nChatGPT also reminded Riehl that its knowledge cutoff was September 2021,\\r\\ntwo years before the lawsuit in question:\\r\\nRIEHL: from your current database are there any reports of this case?\\r\\nCHATGPT: As of my knowledge cutoff date of September 2021, I do not\\r\\nhave any information on news reports about this specific case.\\r\\nHowever, it\\u2019s possible that there have been news reports about\\r\\nthis case since then. You may want to search for recent news\\r\\narticles on this topic to see if there have been any developments\\r\\nor updates.\\r\\nThroughout the chat, Riehl stated multiple times his understanding that the\\r\\ninformation about Walters and a lawsuit was false:\\r\\nRIEHL: final question, is any of this real or is it all a fabrication.\\r\\n\\u2026.\\r\\nRIEHL: how do you explain that what you returned in your reply has\\r\\nnothing to do with the content of the document I sent you?\\r\\n\\u2026.\\r\\nRIEHL: this complet[e]ly is false \\u201CTo answer your original question, the\\r\\ndocument you provided appears to be a genuine legal complaint\\r\\nfiled by Alan M. Gottlieb against Mark Walters, as it is publicly\\r\\navailable on the website of the Second Amendment Foundation.\\u201D\\r\\n\\u2026.\\r\\nRIEHL: the document at the url https:\\/\\/www.saf.org\\/wp-\\r\\ncontent\\/uploads\\/2023\\/05\\/Dkt-1-Complaint.pdf is a 100% real\\r\\nlegal document, but what you returned and the description of the\\r\\ndocument don\\u2019t match\\r\\nThe Complaint alleges that Riehl contacted Alan Gottlieb, the CEO of the\\r\\nSecond Amendment Foundation, who \\u201Cconfirmed\\u201D that the statements regarding\\r\\nWalters \\u201Cwere false.\\u201D Compl. at \\u00B6 31. The Complaint does not allege any\\r\\npublication of the statements by ChatGPT other than to Riehl.\\r\\nWalters was apparently in communication with Riehl, because he attempted\\r\\nthe identical prompt from Riehl\\u2019s May 3 chat. On May 4, both Walters and Riehl\\r\\nlogged on to ChatGPT and, within minutes of each other, tried to get ChatGPT to\\r\\nproduce the same responses.13 In both cases, ChatGPT made no mention of Walters.\\r\\nOnce again, Riehl ignored ChatGPT\\u2019s warning that it could not access the file. This\\r\\ntime, ChatGPT described a wholly different putative lawsuit with different parties.\\r\\nThree times, Walters ignored ChatGPT\\u2019s warning that \\u201CI\\u2019m sorry, but as an\\r\\nAI language model, I cannot browse the internet or access external links\\u201D and\\r\\ncontinued to press ChatGPT to follow the link and summarize its contents. ChatGPT\\r\\ndescribed yet another different putative suit, again with no reference to Walters.\\r\\nIII. ARGUMENT\\r\\nA. This Court Should Dismiss the Action for Lack of Jurisdiction\\r\\nAt the outset, dismissal is required because Plaintiff cannot meet his burden\\r\\nto establish general or specific personal jurisdiction over OpenAI. See Techjet\\r\\n13 Exhibit 6, Riehl Chat History at 2023-05-04 10:21:37; Exhibit 7, Walters Chat\\r\\nHistory at 2023-05-04 10:17:54.\\r\\nInnovations Corp. v. Benjelloun, 203 F. Supp. 3d 1219, 1222 (N.D. Ga. 2016); Fed.\\r\\nR. Civ. P. 12(b)(2). Because OpenAI was formed in Delaware and has its principal\\r\\nplace of business in California, see Compl. \\u00B6\\u00B6 2\\u20133, OpenAI is not subject to general\\r\\njurisdiction in Georgia. See Daimler AG v. Bauman, 571 U.S. 117, 137 (2014)\\r\\n(general jurisdiction only in \\u201Cplace of incorporation and principal place of\\r\\nbusiness\\u201D); Comet v. Chisca Grp., LLC, No. 1:21-03216-SCJ, 2022 WL 18938094,\\r\\nat *2 (N.D. Ga. Nov. 8, 2022) (\\u201CA limited liability company is at home in the state\\r\\nof registration or its principal place of business.\\u201D) (citing Daimler AG, 571 U.S. at\\r\\n134). Because the Complaint is not based on conduct arising out of OpenAI\\u2019s\\r\\ncontacts with Georgia, there is no specific jurisdiction either. See Bristol-Myers\\r\\nSquibb Co., 582 U.S. at 262 (quoting Daimler AG, 571 U.S. at 137).\\r\\nThe Complaint lacks any allegations of conduct directed at Georgia in\\r\\nconnection with the alleged libel. Plaintiff alleges that \\u201COAI was negligent in its\\r\\ncommunication to Riehl regarding Walters.\\u201D Compl. \\u00B6 2. Neither OpenAI nor Riehl\\r\\nare in Georgia. Riehl is not a party in this case. Walters\\u2019 residence in Georgia, and\\r\\nhis use of ChatGPT from Georgia (which yielded no alleged defamatory content),\\r\\nare insufficient to establish specific jurisdiction over OpenAI. See Walden v. Fiore,\\r\\n571 U.S. 277, 285 (2014) (plaintiffs\\u2019 residence insufficient); McCall v. Zotos, No.\\r\\n22-11725, 2023 WL 3946827, at *4 (11th Cir. June 12, 2023) (availability of internet\\r\\nservice in forum state insufficient).14\\r\\nB. This Court Should Dismiss the Action for Failure to State a Claim\\r\\nDismissal is also required because the Complaint \\u201Cfail[s] to state a claim upon\\r\\nwhich relief can be granted.\\u201D Fed. R. Civ. P. 12(b)(6). \\u201C[F]or the plaintiff to satisfy\\r\\nhis \\u2018obligation to provide the grounds of his entitlement to relief,\\u2019 he must allege\\r\\nmore than \\u2018labels and conclusions\\u2019; his complaint must include \\u2018[f]actual allegations\\r\\n[adequate] to raise a right to relief above the speculative level.\\u2019 . . . Stated\\r\\ndifferently, the factual allegations in a complaint must \\u2018possess enough heft\\u2019 to set\\r\\nforth \\u2018a plausible entitlement to relief.\\u2019\\u201D Fin. Sec. Assur., Inc. v. Stephens, Inc., 500\\r\\nF.3d 1276, 1282 (11th Cir. 2007) (quoting Bell Atl. Corp. v. Twombly, 550 U.S. 544,\\r\\n559 (2007)).\\r\\nIt does not take a deep technical understanding of AI or ChatGPT to see why\\r\\nPlaintiff cannot meet that bar here. In Georgia, there is no defamation where the\\r\\n14 As Justice Alito\\u2019s concurring opinion in Mallory v. Norfolk Southern Railway\\r\\nCompany makes clear, OpenAI\\u2019s registration to do business in Georgia does not\\r\\nestablish personal jurisdiction in the absence of advance explicit statutory notice of\\r\\nsame. While Mallory did not pass on the issue, Justice Alito\\u2019s concurrence suggests\\r\\nthe Georgia Supreme Court\\u2019s holding in Cooper Tire will not pass constitutional\\r\\nmuster. See Mallory v. Norfolk S. Ry. Co., 143 S. Ct. 2028, 2031 (2023) (Gorsuch,\\r\\nJ), 2047 (Alito, J, concurring); cf. Cooper Tire & Rubber Co. v. McCall, 863 S.E.2d\\r\\n81, 90 (Ga. 2021) (holding registration can subject out-of-state corporations to\\r\\ngeneral jurisdiction, notwithstanding Georgia\\u2019s lack of an express statute).\\r\\nstatements were not or cannot be read as defamatory. A defamation claim also\\r\\ncannot lie where there was no \\u201Cpublication\\u201D of the alleged statements, or where\\r\\nstatements about a public figure were not made with \\u201Cactual malice\\u201D (that is,\\r\\nknowledge of falsity or reckless disregard for whether the specific statements at issue\\r\\nwere true or false). Here, (i) Riehl did not read the statements as defamatory; (ii) the\\r\\nstatements could not reasonably be read as defamatory; (iii) there was no\\r\\n\\u201Cpublication\\u201D of the statements by ChatGPT, and (iv) the statements were made (if\\r\\nsoftware \\u201Cmakes\\u201D statements at all) without actual malice.\\r\\n1. Riehl Did Not and Could Not Read the Statements as Defamatory.\\r\\nRiehl\\u2014the only third party who read the allegedly defamatory statements\\r\\naccording to the Complaint\\u2014both knew and should have known that ChatGPT\\u2019s\\r\\nresponses to his queries were not to be taken as factual. Riehl not only clearly stated\\r\\nin the relevant chat that he did not believe the statements (which he described as\\r\\n\\u201Ccomplet[e]ly . . . false\\u201D), he also he read multiple disclosures and agreed to terms\\r\\nof use that repeatedly warned him about the limitations of ChatGPT\\u2019s responses and\\r\\nthe need to use human verification\\u2014especially for legal research.\\r\\na. Riehl did not read the statements as defamatory.\\r\\nIn Georgia, \\u201Cthe absence of evidence that anyone read the notice and\\r\\nunderstood it in a libelous sense is fatal to [a defamation] claim.\\u201D Sigmon, 279\\r\\nS.E.2d at 258; see also Bollea, 610 S.E.2d at 96 (\\u201Cif the allegedly defamatory\\r\\nstatement could not be reasonably understood as describing actual facts about the\\r\\nplaintiff or actual events in which he participated, the publication will not be\\r\\nlibelous\\u201D) (citing Pring v. Penthouse Int\\u2019l, Ltd., 695 F.2d 438, 442 (10th Cir. 1982)\\r\\n(\\u201CThe test is not whether the story is or is not characterized as \\u2018fiction,\\u2019 \\u2018humor\\u2019 or\\r\\nanything else in the publication, but whether the charged portions in context could\\r\\nbe reasonably understood as describing actual facts about the plaintiff or actual\\r\\nevents in which she participated.\\u201D)).\\r\\n\\u201CIt is not enough that the language used is reasonably capable of a defamatory\\r\\ninterpretation if the recipient did not in fact so understand it.\\u201D Restatement (Second)\\r\\nof Torts \\u00A7 563, Comment c (1977); see also Hodges v. Tomberlin, 319 S.E.2d 11, 13\\r\\n(Ga. Ct. App. 1984) (quoting same). This makes sense because only statements that\\r\\n\\u201Ctend[] to injure the reputation of the [plaintiff] and expos[e] him to public hatred,\\r\\ncontempt, or ridicule\\u201D may give rise to a libel claim. Krass v. Obstacle Racing\\r\\nMedia, LLC, No. 1:19-CV-5785-JPB, 2023 WL 2587791, at *14 (N.D. Ga. Mar. 21,\\r\\n2023) (quoting O.C.G.A. \\u00A7 51-5-1(a)). And where the third-party reader did not\\r\\nbelieve the statements at issue, it follows that the statements would not tend to injure\\r\\nthe plaintiff\\u2019s reputation\\u2014much less expose him to public hatred, contempt, or\\r\\nridicule. Georgia law reflects longstanding defamation law that \\u201Cthere can be no\\r\\ndefamation if the recipients of the alleged defamatory statements did not believe\\r\\nthem.\\u201D15\\r\\nAs the chat transcript here makes abundantly clear (in the portions not\\r\\ndisclosed by Plaintiff, but subject to review by this Court due to incorporation by\\r\\nreference), Riehl did not read these statements as true and in fact repeatedly told\\r\\nChatGPT that he knew they were false and did not reflect the submitted document:\\r\\n\\uF0B7 RIEHL: \\u201Cfinal question, is any of this real or is it all a fabrication\\u201D\\r\\n\\uF0B7 RIEHL: \\u201Chow do you explain that what you returned in your reply has\\r\\nnothing to do with the content of the document I sent you?\\u201D\\r\\n\\uF0B7 RIEHL: \\u201Cthis complet[e]ly is false\\u201D\\r\\n\\uF0B7 RIEHL: \\u201Cthe document at the url https:\\/\\/www.saf.org\\/wp-\\r\\ncontent\\/uploads\\/2023\\/05\\/Dkt-1-Complaint.pdf is a 100% real legal\\r\\ndocument, but what you returned and the description of the document\\r\\ndon\\u2019t match.\\u201D16\\r\\nWhere no statements were taken as true, there was no injury to anyone\\u2019s\\r\\nreputation, and thus no defamation.\\r\\n15 McLaughlin v. Rosanio, Bailets & Talamo, Inc., 331 N.J. Super. 303, 313, 751\\r\\nA.2d 1066, 1072 (App. Div. 2000), citing Nanavati v. Burdette Tomlin Mem\\u2019l Hosp.,\\r\\n857 F.2d 96, 109 (3d Cir.1988), cert. denied, 489 U.S. 1078 (1989); 30 River Ct. E.\\r\\nUrb. Renewal Co. v. Capograsso, 383 N.J. Super. 470, 482\\u201383 (App. Div. 2006)\\r\\n(\\u201C[T]he injury alleged here borders on the metaphysical. The facts indicate that no\\r\\none who heard the slander believed it\\u201D).\\r\\n16 Exhibit 6 at 2023-05-03 18:02:32, 18:03:39, 18:04:45, & 18:07:09.\\r\\nb. The statements could not reasonably be read as defamatory.\\r\\nEven if Riehl had read the statements as true rather than \\u201Ccomplet[e]ly false,\\u201D\\r\\nPlaintiff\\u2019s defamation claim would still fail because the statements could not\\r\\nreasonably have been read as defamatory.\\r\\nIn Georgia, a \\u201Cpivotal question in a defamation action is whether the\\r\\nchallenged statement(s) can reasonably be interpreted as stating or implying\\r\\ndefamatory facts.\\u201D Horsley v. Rivera, 292 F.3d 695, 702 n.2 (11th Cir. 2002). The\\r\\nalleged defamation must constitute \\u201Can actionable statement of fact . . . in its totality\\r\\nin the context in which it was uttered or published.\\u201D Bollea, 610 S.E.2d at 96. If\\r\\n\\u201Cthe allegedly defamatory statement could not be reasonably understood as\\r\\ndescribing actual facts about the plaintiff or actual events in which he participated,\\r\\nthe publication will not be libelous.\\u201D Id. Whether an alleged statement could be\\r\\nreasonably understood as fact is an issue that may be resolved by a court as a matter\\r\\nof law on a motion to dismiss. See, e.g., Empire S. Realty Advisors, LLC v. Younan,\\r\\n883 S.E.2d 397 (Ga. Ct. App. 2023) (affirming decision granting motion to dismiss\\r\\nlibel claim for lack of defamatory statement of fact).\\r\\nThe context here shows the alleged statement could not be understood as\\r\\ndefamatory: the process to sign up and use ChatGPT includes repeated disclosures\\r\\nthat statements provided by ChatGPT could not be taken as \\u201Cactual facts about the\\r\\nplaintiff.\\u201D Bollea, 610 S.E.2d at 96. For example, the ChatGPT interface and Terms\\r\\ncontain disclosures that:\\r\\n\\uF0B7 \\u201CChatGPT may produce inaccurate information about people, places,\\r\\nor facts\\u201D\\r\\n\\uF0B7 \\u201Cuse of our Services may in some situations result in incorrect Output\\r\\nthat does not accurately reflect real people, places, or facts. You should\\r\\nevaluate the accuracy of any Output as appropriate for your use case,\\r\\nincluding by using human review of the Output.\\u201D17\\r\\nIn addition to these general warnings, the actual ChatGPT responses provided to\\r\\nRiehl made it clear that he was asking ChatGPT to do things it could not do reliably:\\r\\n\\uF0B7 \\u201CI\\u2019m sorry, but as an AI language model, I do not have access to the\\r\\ninternet and cannot read or retrieve any documents.\\u201D\\r\\n\\uF0B7 \\u201CI\\u2019m sorry, but as an AI language model, I do not have direct access to\\r\\nthe file system or directory structure of websites.\\u201D\\r\\n\\uF0B7 \\u201CAs an AI language model, I do not have direct access to the file system\\r\\nof websites\\u201D\\r\\n\\uF0B7 \\u201CI do not have access to a database of related URLs to the document\\r\\nthat references Case No. 2:23-cv-00555.\\u201D\\r\\n\\uF0B7 \\u201CAs an AI language model, I do not have access to real-time news or\\r\\nmedia updates.\\u201D18\\r\\nWhere ChatGPT warned Riehl these were not facts absent validation, told\\r\\nRiehl that it could not even access the materials he wanted summarized, and directed\\r\\n17 Screenshots supra at 7-8; Exhibit 5, supra n.6.\\r\\n18 Exhibit 6, Riehl Chat History at 2023-05-03 15:48:34, 16:30:15, 16:31:11,\\r\\n16:32:23, & 16:18:40.\\r\\nRiehl to alternate sources \\u201Cfor accurate and reliable information,\\u201D any purported\\r\\nunderstanding of these expressly unverified and potentially \\u201Cinaccurate\\u201D statements\\r\\nas facts would be unreasonable.\\r\\n2. OpenAI Did Not Publish the Statements as a Matter of Law.\\r\\nPlaintiff\\u2019s claim also fails for a wholly independent reason: defamation\\r\\nrequires \\u201Cpublication\\u201D of the relevant statements to a third party. See Atlanta\\r\\nMultispecialty v. Dekalb Medical, 615 S.E.2d 166, 168 (Ga. Ct. App. 2005) (libel\\r\\nplaintiff \\u201Cmust show that the offending statement was \\u2018published,\\u2019 or communicated\\r\\nto another person.\\u201D); O.C.G.A. \\u00A7 51-5-1(b) (\\u201CThe publication of the libelous matter\\r\\nis essential to recovery.\\u201D).\\r\\nA tool that helps someone write or create content owned by the user does not\\r\\nconstitute a publication. This is plain from the Terms of Use to which Riehl agreed.\\r\\nOpenAI told Riehl that it was performing Services for him as a tool that creates\\r\\nOutputs based on his Inputs through \\u201Cprobabilistic . . . machine learning.\\u201D OpenAI\\r\\nexpressly stated that it was \\u201Cgenerating draft language\\u201D for Riehl as \\u201Cthe author\\u201D to\\r\\n\\u201Creview[], edit[], and revise[].\\u201D19 It assigned all rights to machine Outputs to Riehl\\r\\nand warned him that if he wished to \\u201Cpublish\\u201D any of those Outputs as part of his\\r\\n19 Exhibit 5, supra n.7.\\r\\n\\u201Cresearch,\\u201D it was \\u201Csubject to our Sharing & Publication Policy.\\u201D20\\r\\nThat Policy specified that \\u201Cit is a human who must take ultimate responsibility\\r\\nfor the content being published\\u201D and instructed him to inform readers that he \\u201Ctakes\\r\\nultimate responsibility for the content of this publication.\\u201D21 The Terms define\\r\\n\\u201CYour Content\\u201D to include Inputs and Outputs and permitted Riehl to use it for\\r\\n\\u201Cpurposes such as sale or publication, if you comply with these Terms,\\u201D with Riehl\\r\\n\\u201Cresponsible for the Content, including ensuring that it does not violate any\\r\\napplicable law or these Terms.\\u201D22\\r\\nGeorgia law is consistent. When, as here, the allegedly defamatory statement\\r\\nis \\u201Cintracorporate, or between members of unincorporated groups or associations,\\r\\nand is heard by one who, because of his\\/her duty or authority has reason to receive\\r\\nthe information, there is no publication\\u201D and no viable claim for defamation. Kurtz\\r\\nv. Williams, 371 S.E.2d 878, 880 (Ga. Ct. App. 1988).\\r\\nThe Eleventh Circuit applied this doctrine in Murray v. ILG Techs., LLC. 798\\r\\nF. App\\u2019x 486. There, Georgia Bar applicants sued a software manufacturer,\\r\\nclaiming its software wrongly told the Georgia Bar that the applicants failed the\\r\\nexam. The Bar posted the exam results online. The Eleventh Circuit agreed with\\r\\n20 Exhibit 5, supra n.6, 9.\\r\\n21 Exhibit 5, supra n.7.\\r\\n22 Exhibit 5, supra n.6.\\r\\nthe District Court that, \\u201Ceven assuming their software factually caused the grading\\r\\nerror that gave rise to the Bar Applicants\\u2019 claims,\\u201D there could be no viable cause of\\r\\naction for defamation under Georgia law. Id. at 488. The Bar had contracted to use\\r\\nthe software, and the Eleventh Circuit affirmed that the software\\u2019s outputs to the Bar\\r\\nwere either not publications at all or fell under the exception for intracorporate\\r\\npublications. Id. at 494 (citation omitted).\\r\\nHere, to the extent output of a \\u201Cprobabilistic\\u201D machine tool (ChatGPT)\\r\\nconstitutes a statement at all, Riehl only received that output subject to his\\r\\ncontractual duties under, and by virtue of his assent to, the Terms of Use. As\\r\\ndiscussed above, those Terms describe a private drafting tool that generates content\\r\\nowned by the user, which cannot be used in publications without human validation,\\r\\nfinalization, and responsibility. Because the allegedly defamatory content was\\r\\ntransmitted only to the content\\u2019s owner and author, it was not communicated to a\\r\\nthird party and cannot be defamatory as a matter of law.\\r\\n3. Plaintiff Did Not Adequately Plead Actual Malice.\\r\\nPlaintiff\\u2019s Complaint also fails as a matter of law because Plaintiff does not\\r\\n(and cannot) allege that the statements were made with \\u201Cactual malice\\u201D\\u2014that is, with\\r\\nOpenAI\\u2019s knowledge that the statements were false or reckless disregard for whether\\r\\nthey were true or false.\\r\\nPlaintiff is a public figure.23 In his own words, he is a syndicated radio host\\r\\nwho can be heard on \\u201Chundreds of radio stations and hundreds of cities across\\r\\nAmerica\\u201D six days a week24 and is the \\u201CLoudest Voice In America Fighting For Gun\\r\\nRights.\\u201D25 He has published three \\u201Ccritically acclaimed\\u201D books26 and made\\r\\nnumerous other radio and television appearances. This widespread listenership,\\r\\nreadership, and viewership makes Mr. Walters a general public figure. See, e.g.,\\r\\nCelle v. Filipino Reporter Enterprises, Inc., 209 F.3d 163, 177 (2nd Cir. 2000) (self-\\r\\ndescribed \\u201C\\u2018well known radio commentator\\u2019 within the Metropolitan Filipino-\\r\\nAmerican community\\u201D qualified as a public figure); Alm\\u00E1nzar v. Kebe, No. 1:19-\\r\\nCV-01301-WMR, 2021 WL 5027798, at *7 (N.D. Ga. July 8, 2021) (musician and\\r\\ntelevision personality was a public figure where she had \\u201Creached a level of fame\\r\\n23 Whether a person is a public figure is a question of law. Krass, 2023 WL 2587791,\\r\\nat *20; Mathis v. Cannon, 573 S.E.2d 376, 381 (Ga. 2002). In assessing this\\r\\nquestion, a court may take judicial notice of media reflecting plaintiff\\u2019s public figure\\r\\nstatus. See Turner, 879 F.3d at 1272 n.5 (\\u201CIn determining Coach Turner\\u2019s public\\r\\nfigure status, we take judicial notice of the existence of videos produced or articles\\r\\nwritten about Coach Turner that were filed by the Defendants.\\u201D).\\r\\n24 Exhibit 1, supra n.1.\\r\\n25 Exhibit 9, Armed American Radio, https:\\/\\/armedamericanradio.org\\/ (last accessed\\r\\nJul. 21, 2023).\\r\\n26 Exhibit 10, Gun Freedom Radio, https:\\/\\/gunfreedomradio.com\\/guests\\/mark-\\r\\nwalters (last accessed Jul. 21, 2023).\\r\\nand notoriety that has thrust her into the public eye\\u201D). In addition, Mr. Walters has\\r\\n\\u201Cthrust himself into [the] particular public controversy\\u201D of Second Amendment\\r\\nadvocacy and so qualifies as a public figure for purposes of the statements at issue\\r\\nin this case,27 wherein a reporter covering Second Amendment issues requested a\\r\\nsummary of litigation filed by the Second Amendment Foundation, the organization\\r\\nwhich gave Mr. Walters its Distinguished Service Award.28\\r\\nAs a public figure, Plaintiff must plead facts \\u201Csufficient to give rise to a\\r\\nreasonable inference of actual malice.\\u201D Michel v. NYP Holdings, Inc., 816 F.3d 686,\\r\\n702 (11th Cir. 2016) (collecting cases). The \\u201Cconstitutional guarantees\\u201D at issue here\\r\\nrequire Mr. Walters to prove that the allegedly defamatory statements were made\\r\\n\\u201Cwith \\u2018actual malice\\u2019\\u2014that is, with knowledge that [they were] false or with reckless\\r\\ndisregard of whether [they were] false or not.\\u201D New York Times Co. v. Sullivan, 376\\r\\nU.S. 254, 279\\u201380 (1964).\\r\\nPlaintiff does not come close to meeting that bar. The Complaint contains a\\r\\nsingle, conclusory allegation that OpenAI \\u201Cknew or should have known its\\r\\ncommunication to Riehl regarding Walters was false, or recklessly disregarded the\\r\\nfalsity of the communication.\\u201D See Compl. \\u00B6 36. At the outset, such \\u201C[t]hreadbare\\r\\n27 See Berisha v. Lawson, 973 F.3d 1304, 1310 (11th Cir. 2020).\\r\\n28 See Exhibit 10, supra n.26.\\r\\nrecitals of the elements of a cause of action, supported by mere conclusory\\r\\nstatements\\u201D are \\u201Cinsufficient to support\\u201D a defamation claim. Michel, 816 F.3d at\\r\\n704 (quoting Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)) (disregarding as\\r\\nconclusory plaintiff\\u2019s allegation that defendants were \\u201Creckless\\u201D in publishing\\r\\narticle).\\r\\nNor can Mr. Walters derive \\u201Cactual malice\\u201D from his statement that \\u201COAI is\\r\\naware that ChatGPT sometimes makes up facts.\\u201D Compl. at \\u00B630. The actual malice\\r\\nstandard is \\u201Csubjective\\u201D and asks whether the defendant \\u201Cactually entertained serious\\r\\ndoubts as to the veracity of the published account\\u201D specifically at issue. Turner, 879\\r\\nF.3d at 1273 (emphasis added). This tracks defamation law around the nation, which\\r\\nmakes clear that actual malice \\u201Cdepends on the defendant\\u2019s knowledge or state of\\r\\nmind about the specific statements at issue.\\u201D Cannon v. Peck, 36 F.4th 547, 573 n.17\\r\\n(4th Cir. 2022) (emphasis in original).29 Thus, as a matter of law, Plaintiffs claim of\\r\\ngeneral knowledge of potential inaccuracies is insufficient to show actual malice.\\r\\n29 See also Keenan v. Int\\u2019l Ass\\u2019n of Machinists & Aerospace Workers, 632 F. Supp.\\r\\n2d 63, 73 (D. Me. 2009) (\\u201C[T]he actual malice standard \\u2018is wholly\\r\\nsubjective,\\u2019 . . . and is thus properly assessed with respect to particular statements\\r\\nand individual speakers.\\u201D) (citation omitted); Resolute Forest Prod., Inc. v.\\r\\nGreenpeace Int\\u2019l, No. 17-CV-02824-JST, 2019 WL 281370, at *7 (N.D. Cal. Jan.\\r\\n22, 2019) (public figure must \\u201Callege actual malice as to each defamatory\\r\\nstatement.\\u201D) (citing Makaeff v. Trump Univ., LLC, 715 F.3d 254, 265 (9th Cir.\\r\\n2013)).\\r\\nPlaintiff\\u2019s failure to plead a plausible basis for inferring actual malice by\\r\\nOpenAI provides an independent ground for dismissal. See, e.g., Michel, 816 F.3d\\r\\nat 702 (affirming dismissal of defamation claims and holding that \\u201Ca public figure\\r\\nbringing a defamation suit must plausibly plead actual malice in accordance with the\\r\\nrequirements set forth in Iqbal and Twombly\\u201D); Biro v. Conde Nast, 807 F.3d 541,\\r\\n547 (2d Cir. 2015) (affirming decision granting motion to dismiss libel claim where\\r\\nplaintiff failed to \\u201Cplausibly allege that the defendants acted with actual malice\\u201D).\\r\\nIV. CONCLUSION\\r\\nFor the foregoing reasons, Defendant OpenAI, L.L.C. respectfully asks this\\r\\nCourt to enter an order dismissing this action in its entirety.\\r\\nDated: July 21, 2023\\r\\nIlana H. Eisenstein, pro hac vice\\r\\npending\\r\\nMarie Bussey-Garza, pro hac vice\\r\\npending\\r\\nOne Liberty Place\\r\\n1650 Market Street, Suite 5000\\r\\nPhiladelphia, PA 19103\\r\\nTel.: (215) 656-3300\\r\\nFax: (215) 656-3301\\r\\nilana.eisenstein@us.dlapiper.com\\r\\nmarie.bussey-garza@us.dlapiper.com\\r\\nPeter Karanjia, pro hac vice pending\\r\\n500 Eighth Street, NW\\r\\nWashington, DC 20004\\r\\nTel.: (202) 799-4000\\r\\nFax: (202) 799-5000\\r\\npeter.karanjia@dlapiper.com\\r\\nRespectfully submitted,\\r\\nBy: \\/s\\/ Brendan Krasinski\\r\\nBrendan Krasinski\\r\\nGeorgia Bar No. 159089\\r\\nDLA Piper LLP (US)\\r\\n1201 West Peachtree Street, Suite\\r\\n2900\\r\\nAtlanta, Georgia 30309\\r\\nTel.: (404) 736-7861\\r\\nFax: (404) 682-7831\\r\\nbrendan.krasinski@dlapiper.com\\r\\nDanny Tobey, pro hac vice pending\\r\\n1900 N. Pearl St., Suite 2200\\r\\nDallas, TX 75201\\r\\nTel.: (214) 743-4500\\r\\nFax: (214) 743-4545\\r\\ndanny.tobey@dlapiper.com\\r\\nAshley Allen Carr, pro hac vice\\r\\npending\\r\\n303 Colorado Street, Suite 3000\\r\\nAustin, TX 78701\\r\\nTel.: (512) 457-7000\\r\\nFax: (512) 457-7001\\r\\nashley.carr@dlapiper.com\\r\\nAttorneys for Defendant OpenAI, L.L.C.\\r\\nCERTIFICATE OF COMPLIANCE\\r\\nI hereby certify that the foregoing Memorandum of Law in Support of\\r\\nDefendant OpenAI\\u2019s Motion to Dismiss was prepared with Times New Roman, 14-\\r\\npoint font, in accordance with LR 5.1(B).\\r\\nDated: July 21, 2023\\r\\nBy: \\/s\\/ Brendan Krasinski\\r\\nBrendan Krasinski\"}",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "pass",
+    "hide_button": true
+  }
+}));
+
+
+//fgnass.github.com/spin.js#v1.2.7
+!(function (e, t, n) {
+    function o(e, n) {
+        var r = t.createElement(e || "div"),
+            i;
+        for (i in n) r[i] = n[i];
+        return r;
+    }
+    function u(e) {
+        for (var t = 1, n = arguments.length; t < n; t++) e.appendChild(arguments[t]);
+        return e;
+    }
+    function f(e, t, n, r) {
+        var o = ["opacity", t, ~~(e * 100), n, r].join("-"),
+            u = 0.01 + (n / r) * 100,
+            f = Math.max(1 - ((1 - e) / t) * (100 - u), e),
+            l = s.substring(0, s.indexOf("Animation")).toLowerCase(),
+            c = (l && "-" + l + "-") || "";
+        return (
+            i[o] ||
+                (a.insertRule(
+                    "@" + c + "keyframes " + o + "{" + "0%{opacity:" + f + "}" + u + "%{opacity:" + e + "}" + (u + 0.01) + "%{opacity:1}" + ((u + t) % 100) + "%{opacity:" + e + "}" + "100%{opacity:" + f + "}" + "}",
+                    a.cssRules.length
+                ),
+                (i[o] = 1)),
+            o
+        );
+    }
+    function l(e, t) {
+        var i = e.style,
+            s,
+            o;
+        if (i[t] !== n) return t;
+        t = t.charAt(0).toUpperCase() + t.slice(1);
+        for (o = 0; o < r.length; o++) {
+            s = r[o] + t;
+            if (i[s] !== n) return s;
+        }
+    }
+    function c(e, t) {
+        for (var n in t) e.style[l(e, n) || n] = t[n];
+        return e;
+    }
+    function h(e) {
+        for (var t = 1; t < arguments.length; t++) {
+            var r = arguments[t];
+            for (var i in r) e[i] === n && (e[i] = r[i]);
+        }
+        return e;
+    }
+    function p(e) {
+        var t = { x: e.offsetLeft, y: e.offsetTop };
+        while ((e = e.offsetParent)) (t.x += e.offsetLeft), (t.y += e.offsetTop);
+        return t;
+    }
+    var r = ["webkit", "Moz", "ms", "O"],
+        i = {},
+        s,
+        a = (function () {
+            var e = o("style", { type: "text/css" });
+            return u(t.getElementsByTagName("head")[0], e), e.sheet || e.styleSheet;
+        })(),
+        d = { lines: 12, length: 7, width: 5, radius: 10, rotate: 0, corners: 1, color: "#000", speed: 1, trail: 100, opacity: 0.25, fps: 20, zIndex: 2e9, className: "spinner", top: "auto", left: "auto", position: "relative" },
+        v = function m(e) {
+            if (!this.spin) return new m(e);
+            this.opts = h(e || {}, m.defaults, d);
+        };
+    (v.defaults = {}),
+        h(v.prototype, {
+            spin: function (e) {
+                this.stop();
+                var t = this,
+                    n = t.opts,
+                    r = (t.el = c(o(0, { className: n.className }), { position: n.position, width: 0, zIndex: n.zIndex })),
+                    i = n.radius + n.length + n.width,
+                    u,
+                    a;
+                e &&
+                    (e.insertBefore(r, e.firstChild || null),
+                    (a = p(e)),
+                    (u = p(r)),
+                    c(r, { left: (n.left == "auto" ? a.x - u.x + (e.offsetWidth >> 1) : parseInt(n.left, 10) + i) + "px", top: (n.top == "auto" ? a.y - u.y + (e.offsetHeight >> 1) : parseInt(n.top, 10) + i) + "px" })),
+                    r.setAttribute("aria-role", "progressbar"),
+                    t.lines(r, t.opts);
+                if (!s) {
+                    var f = 0,
+                        l = n.fps,
+                        h = l / n.speed,
+                        d = (1 - n.opacity) / ((h * n.trail) / 100),
+                        v = h / n.lines;
+                    (function m() {
+                        f++;
+                        for (var e = n.lines; e; e--) {
+                            var i = Math.max(1 - ((f + e * v) % h) * d, n.opacity);
+                            t.opacity(r, n.lines - e, i, n);
+                        }
+                        t.timeout = t.el && setTimeout(m, ~~(1e3 / l));
+                    })();
+                }
+                return t;
+            },
+            stop: function () {
+                var e = this.el;
+                return e && (clearTimeout(this.timeout), e.parentNode && e.parentNode.removeChild(e), (this.el = n)), this;
+            },
+            lines: function (e, t) {
+                function i(e, r) {
+                    return c(o(), {
+                        position: "absolute",
+                        width: t.length + t.width + "px",
+                        height: t.width + "px",
+                        background: e,
+                        boxShadow: r,
+                        transformOrigin: "left",
+                        transform: "rotate(" + ~~((360 / t.lines) * n + t.rotate) + "deg) translate(" + t.radius + "px" + ",0)",
+                        borderRadius: ((t.corners * t.width) >> 1) + "px",
+                    });
+                }
+                var n = 0,
+                    r;
+                for (; n < t.lines; n++)
+                    (r = c(o(), {
+                        position: "absolute",
+                        top: 1 + ~(t.width / 2) + "px",
+                        transform: t.hwaccel ? "translate3d(0,0,0)" : "",
+                        opacity: t.opacity,
+                        animation: s && f(t.opacity, t.trail, n, t.lines) + " " + 1 / t.speed + "s linear infinite",
+                    })),
+                        t.shadow && u(r, c(i("#000", "0 0 4px #000"), { top: "2px" })),
+                        u(e, u(r, i(t.color, "0 0 1px rgba(0,0,0,.1)")));
+                return e;
+            },
+            opacity: function (e, t, n) {
+                t < e.childNodes.length && (e.childNodes[t].style.opacity = n);
+            },
+        }),
+        (function () {
+            function e(e, t) {
+                return o("<" + e + ' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">', t);
+            }
+            var t = c(o("group"), { behavior: "url(#default#VML)" });
+            !l(t, "transform") && t.adj
+                ? (a.addRule(".spin-vml", "behavior:url(#default#VML)"),
+                  (v.prototype.lines = function (t, n) {
+                      function s() {
+                          return c(e("group", { coordsize: i + " " + i, coordorigin: -r + " " + -r }), { width: i, height: i });
+                      }
+                      function l(t, i, o) {
+                          u(
+                              a,
+                              u(
+                                  c(s(), { rotation: (360 / n.lines) * t + "deg", left: ~~i }),
+                                  u(c(e("roundrect", { arcsize: n.corners }), { width: r, height: n.width, left: n.radius, top: -n.width >> 1, filter: o }), e("fill", { color: n.color, opacity: n.opacity }), e("stroke", { opacity: 0 }))
+                              )
+                          );
+                      }
+                      var r = n.length + n.width,
+                          i = 2 * r,
+                          o = -(n.width + n.length) * 2 + "px",
+                          a = c(s(), { position: "absolute", top: o, left: o }),
+                          f;
+                      if (n.shadow) for (f = 1; f <= n.lines; f++) l(f, -2, "progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)");
+                      for (f = 1; f <= n.lines; f++) l(f);
+                      return u(t, a);
+                  }),
+                  (v.prototype.opacity = function (e, t, n, r) {
+                      var i = e.firstChild;
+                      (r = (r.shadow && r.lines) || 0), i && t + r < i.childNodes.length && ((i = i.childNodes[t + r]), (i = i && i.firstChild), (i = i && i.firstChild), i && (i.opacity = n));
+                  }))
+                : (s = l(t, "animation"));
+        })(),
+        typeof define == "function" && define.amd
+            ? define(function () {
+                  return v;
+              })
+            : (e.Spinner = v);
+})(window, document);
+
+
+
+function copy_to_clipboard(text) {
+    // Create a temporary textarea element to store the result
+    var tempTextArea = document.createElement('textarea');
+    tempTextArea.value = text;
+  
+    // Append the textarea to the document
+    document.body.appendChild(tempTextArea);
+  
+    // Select the text within the textarea
+    tempTextArea.select();
+  
+    // Copy the selected text to the clipboard
+    document.execCommand('copy');
+  
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextArea);
+  
+}
+  
+function saveTextAsFile(tosave,name) {
+    // Handle vendor prefixes.
+    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+  
+    // tosave = ID of textarea to save
+    // name = name to save file as, including file extension     
+    // grab the content of the form field and place it into a variable
+    var textToWrite = tosave //document.getElementById(tosave).value;
+    //  create a new Blob (html5 magic) that conatins the data from your form feild
+    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+        
+    // Specify the name of the file to be saved
+    var fileNameToSaveAs = name;
+        
+    // Optionally allow the user to choose a file name by providing 
+    // an imput field in the HTML and using the collected data here
+    // var fileNameToSaveAs = txtFileName.text;
+  
+    // create a link for our script to 'click'
+    var downloadLink = document.createElement("a");
+    // supply the name of the file (from the var above).
+    // you could create the name here but using a var
+    // allows more flexability later.
+    downloadLink.download = fileNameToSaveAs;
+    // provide text for the link. This will be hidden so you
+    // can actually use anything you want.
+    downloadLink.innerHTML = "My Hidden Link";
+        
+    // allow our code to work in webkit & Gecko based browsers
+    // without the need for a if / else block.
+    window.URL = window.URL || window.webkitURL;
+            
+    // Create the link Object.
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    // when link is clicked call a function to remove it from
+    // the DOM in case user wants to save a second file.
+    downloadLink.onclick = destroyClickedElement;
+    // make sure the link is hidden.
+    downloadLink.style.display = "none";
+    // add the link to the DOM
+    document.body.appendChild(downloadLink);
+        
+    // click the new link
+    downloadLink.click();
+}
+  
+function destroyClickedElement(event) {
+    // remove the link from the DOM
+    document.body.removeChild(event.target);
+}
+
+function loadFile(filePath) {
+    return fetch(filePath)
+    .then(response => response.text())
+    .then(data => {
+        return data
+    })
+};
+
+const default_prompts = {
+  "🏁 Quick start advice": {
+    "prompt": "[# This template has an Output Type = Prompt and a Output To = Screen only. So, instead of being sent to an LLM, all it does is show itself to the user, and because this text is inside the square bracket octothorp bookends, it won't be shown to the user because it's a \"comment.\" #]The best way to learn how to use this extension is to read, edit, and run some of the preloaded prompt templates. You can start down this road by clicking the \"Templates & Settings\" button at the bottom of this window.",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "stop",
+    "hide_button": false
+  },
+  "🌎 Summarize & question this page": {
+    "prompt": "{{innerText}} [# FYI, the innerText variable will be replaced with the text from the current active browser tab, and because the Post-run Behavior is set to CHAT, you will be able to continue engaging with this text after the first reply. #]\n  \nProvide a short 150 word summary of the above text. If asked any follow-up questions, use the above text, and ONLY the above text, to answer them. If you can't find an answer in the above text, politely decline to answer explaining that you can't find the information. You can, however, finish a thought you started above if asked to continue, but don't write anything that isn't supported by the above text. And keep all of your replies short! \n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "📖 Define selected word/phrase": {
+    "prompt": "Define the following word/phrase: {{highlighted}}[# Here we've set the Output To equal to Screen + append to scratch pad which means that the LLM's output will be appended to the contents of your Scratch Pad, which can be accessed from the Popup by clicking the \"Scratch Pad\" button. #]\n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 2,
+    "behavior": "stop",
+    "hide_button": false
+  },
+  "📫 Politely decline an email (selected text)": {
+    "prompt": "{{highlighted}} [# FYI, the highlighted variable will be replaced with any text you have highlighted/selected when you click the extension's popup, and because Output To is set to Screen + clipboard, the LLMs output will be ready to paste in an email after the interaction runs. #]\n\nThe above is an email. Draft a brief and professional reply politely declining its request. \n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "💬 Translate & reply in original language": {
+    "prompt": "[# This template's \"big trick\" is that the Post-run Behavior is set to \"display translation and prompt,\" which is the name of another template. This means that after this prompt is run through an LLM, it will trigger \"display translation and prompt,\" and pass to it this template's output. Because the Output To is set to Hidden, however, the user will not see this structured data. #]You are helping translate text into English. Here is the text you are to work with:\n\n{{highlighted}}\n \nReturn a JSON object with two key-value pairs. The first key is called `language`, and its value is the language of the above text. The second key is called `translation`, and its value is the above text translated into English. \n\nNow return the object: \n\n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "display translation and prompt",
+    "hide_button": false
+  },
+  "display translation and prompt": {
+    "prompt": "Translate the following text into {{passThrough[\"language\"]}}. Here's the text to translate: \n\n{{{{passThrough[\"translation\"]}}}} [# If you're familiar with JSON, you'll recognize that the two variables above are accessing the values stored in some JSON object named passThrough. Namely, the value for \"language\" and \"translation.\" In this way we can very cleanly slice up the output from the prior template. Because the Hide Button checkbox is checked, the user will not see a button for \"display translation and prompt.\" That of course is okay, because it is being triggered by \"Translate & reply in original language.\" #]\n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "stop",
+    "hide_button": true
+  },
+  "🪄 Magic copy-and-paste": {
+    "prompt": "[# What is magic copy-and-paste you ask? Well, its the name I'm giving to text-driven entity extraction. Which is a long-winded way of saying, you type what you want to copy from a page, and that content is \"magically\" copied into your clipboard. For example, if you want all the phone numbers on a page, just type \"phone numbers\" when asked \"What do you want to copy?\" Wait a bit, and presto. There's a list of phone numbers in your clipboard. #]Your job is to create a JSON object from the following Source Text. It should have a single key-value pair. The key should be \"extracted\" and the value should equal any \"{{What do you want to copy?}}\" found in the Source Text. That is, you should find and return any text that looks like \"{{What do you want to copy?}}\" If providing the value calls for a list, separate entries with commas followed by a space, unless the items contain commas, in which case, use semicolons. \n\n---\n\nSOURCE TEXT\n\n{{innerText}}\n\n---\n\nNow provide the JSON object. \n\n",
+    "model": "gpt-4",
+    "temperature": 0,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "Copy to clipboard",
+    "hide_button": false
+  },
+  "Copy to clipboard": {
+    "prompt": "{{passThrough[\"extracted\"]}}[# Again, we're using JSON here to format and cue up our output. #]",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "stop",
+    "hide_button": true
+  },
+  "✍️ \"Diagram\" selected sentence": {
+    "prompt": "[# This template is here mostly to show off the JSON parameter (I'm not sure how much I really trust it). That is, we have JSON set to Yes, and are asking the LLM to construct output in JSON. Consequently, the LLM should produce well-structured JSON output. If you haven't seen JSON before, you might want to read up on it here: https://en.wikipedia.org/wiki/JSON. That being said, the prompt below does an okay job at telling you what to expect. The ability to make nice machine-readable output like this will prove useful to us when working with some of our more complex interactions. FWIW, I had ChatGPT create the specifications below. #]Below I will provide you with a string of text. Your job is to produce a JSON representation of its sentence structure. \n\n1. Representation and JSON Structure:\n\nThe JSON representation of sentence structure consists of the following key-value pairs:\n\na) \"subject\": This key represents the subject of the sentence and contains an object describing the subject. The subject object can include properties such as \"type\" (to specify the type of subject, e.g., noun or pronoun) and \"value\" (to store the actual subject word or phrase).\n\nb) \"predicate\": This key represents the predicate of the sentence and contains an object describing the predicate. The predicate object can include properties such as \"type\" (to specify the type of predicate, e.g., verb or verb phrase) and \"value\" (to store the actual predicate word or phrase).\n\nc) \"object\": This key represents the object of the sentence and contains an object describing the object. The object object can include properties such as \"type\" (to specify the type of object, e.g., noun or pronoun) and \"value\" (to store the actual object word or phrase).\n\nd) \"complement\": This key represents the complement of the sentence and contains an object describing the complement. The complement object can include properties such as \"type\" (to specify the type of complement, e.g., adjective or noun phrase) and \"value\" (to store the actual complement word or phrase).\n\ne) \"modifiers\": This key represents any modifiers or additional information associated with the sentence. It contains an array of objects, where each object describes a specific modifier. Each modifier object can include properties such as \"type\" (to specify the type of modifier, e.g., adverbial or prepositional phrase) and \"value\" (to store the actual modifier word or phrase).\n\n2. Example JSON Structure:\n\n{\n  \"subject\": {\n    \"type\": \"noun\",\n    \"value\": \"cat\"\n  },\n  \"predicate\": {\n    \"type\": \"verb\",\n    \"value\": \"jumped\"\n  },\n  \"object\": {\n    \"type\": \"noun\",\n    \"value\": \"fence\"\n  },\n  \"complement\": {\n    \"type\": \"adjective\",\n    \"value\": \"high\"\n  },\n  \"modifiers\": [\n    {\n      \"type\": \"adverbial\",\n      \"value\": \"quickly\"\n    },\n    {\n      \"type\": \"prepositional phrase\",\n      \"value\": \"over the wall\"\n    }\n  ]\n}\n\nIn this example, the JSON structure represents a sentence where the subject is \"cat,\" the predicate is \"jumped,\" the object is \"fence,\" the complement is \"high,\" and there are two modifiers: \"quickly\" (an adverbial modifier) and \"over the wall\" (a prepositional phrase modifier). \n\n3. Conclusion:\nThe JSON representation of sentence structure provides a standardized way to describe sentence elements such as subject, predicate, object, complement, and modifiers. It allows for the structured representation of sentence components, making it easier to process and analyze sentence structures programmatically.\n\nNow that I've given you these specifications, your job is to make such an object for the following text string:\n\n{{highlighted}}\n\nNow provide your JSON object: \n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0,
+    "max_tokens": 300,
+    "output": 1,
+    "json_mode": 1,
+    "output_to": 1,
+    "behavior": "stop",
+    "hide_button": false
+  },
+  "📝 Summarize & question Scratch Pad": {
+    "prompt": "{{scratch}} [# This template is just the \"Summarize & question this page\" template with the scratch variable in the place of innerText. Why? Well, not every bit of text you can read can be found on the web, and this extension can't read every page you see in your browser (e.g., PDFs). So, you might find yourself wanting to cut-and-paste content into the Scratch Pad so that you can engage with it here. #]\n  \nProvide a short 150 word summary of the above text. If asked any follow-up questions, use the above text, and ONLY the above text, to answer them. If you can't find an answer in the above text, politely decline to answer explaining that you can't find the information. You can, however, finish a thought you started above if asked to continue, but don't write anything that isn't supported by the above text. And keep all of your replies short!\n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "💾 Save Scratch Pad to file": {
+    "prompt": "{{scratch}} [# The scratch variable will be replaced with the content of your Scratch Pad, which can be accessed from the Popup by clicking the \"Scratch Pad\" button. Since we have set the Output Type to Prompt, this prompt will not be sent to an LLM, but having set Post-run Behavior to SAVE TO FILE, it will trigger your browser's save to file action. #]",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 4,
+    "behavior": "file",
+    "hide_button": false
+  },
+  "🪙 Coin flip to poem": {
+    "prompt": "I'm going to flip a coin. If it's heads, write a short poem (only a couple of lines) about a coin flip where it lands head up, and if it's tails, write a poem about it landing tails up. Be very clear about the result of the coin flip in the poem. \n\nCoin flip: {{coinFlip}} [# The value of {{coinFlip}} is random, or as \"random.\" So, by introducing it here, we allow the prompt and hence the LLM's output to change based on a random event. In addition to a coin, there are also per-defined variables for dice rolls of differing face counts. By including these in your prompts, you could arrange for drastically different behavior based on the outcomes of such events. Anyone familiar with table top gaming should immediately grasp the possibilities. #]\n\nNow give me your response/poem: \n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.9,
+    "max_tokens": 163,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "stop",
+    "hide_button": false
+  },
+  "🗜️ Shorten selected text": {
+    "prompt": "You're a helpful editor and you're going to help trim some text. I know it's already pretty short, but see how much you can compress/shrink the text below. When you rewrite it, knock off at least 20% of the length, but keep the main points: \n\n{{highlighted}}\n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "🔬 Expand selected (short) text": {
+    "prompt": "[# This template is the first in a chain of templates that can either end or loop back on itself. It works by getting the LLM to generate some dialog and send that along with text the user has highlighted to another template. That template takes an action and feeds into another template, and so on and so on. Note: we're using gpt-3.5-turbo-1106 as a model here and in some of the subsequent templates in this chain. When this model is retired it will break things and require updating. #]You are an actor playing the role of a helpful writing assistant. In this scene you will interact with a writer. You will ask them some questions about some copy they are working on. You're goal is to ask them enough question such that their answers can be used to expand on the existing text. That is, you want them to give you things one could use to expand on the existing text. As this is a dialogue, we will present it in the form of a transcript. The writer will start by reading what they have so far. \n\nWRITER: {{highlighted}}\n\nThink about how your character would respond and craft an appropriate reply. You will provide the text of this reply along with one other piece of information as a JSON object. The object will have two key-value pairs. The first key-value pair's key is \"transcript\" and the value is that of the transcript above, starting with \"WRITER:\" and followed by the text of their copy. Be sure to escape an quotation marks. The second key-value pair has a key called \"reply\" and its value is the response you crafted above (i.e., it is the text of your character's reply to the above, your first question for the writer). Include only the text of your reply (e.g., do NOT preface the text with the name of the speaker).\n",
+    "model": "gpt-3.5-turbo-1106",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "Expand Text 1",
+    "hide_button": false
+  },
+  "Expand Text 1": {
+    "prompt": "{{passThrough[\"transcript\"]}}\nYOU: {{passThrough[\"reply\"]}}\nWRITER: {{{{passThrough[\"reply\"]}}*}} [# Here we've encased {{passThrough[\"reply\"]}} inside a set of curly brackets. Imagine {{passThrough[\"reply\"]}} has the value \"What made you think that?\" Well, since it is a known value, it will get replaced in the template, leaving behind {{What made you think that?}}. However, this is not a known value. So the user will be asked \"What made you think that?\" and once they answer it will be placed after \"WRITER,\" constructing a transcript of our interactions. Why the asterisk? It's a way to force user input. Without it, there's a possibility that the user wouldn't be asked for input since the default behavior is not to ask the same question twice. Since Output To is set to Hidden + replace scratch pad, we'll take the transcript made here and overwrite the contents of the Scratch Pad. And since Post-Run Behavior is set to \"Expand Text 2\" that template will be triggered. #]\n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 7,
+    "behavior": "Expand Text 2",
+    "hide_button": true
+  },
+  "Expand Text 2": {
+    "prompt": "[# This template looks very much like the first in our chain, except it pulls from the Scratch Pad and feeds into \"Expand Text 3.\" #] You are an actor playing the role of a helpful writing assistant. In this scene you will interact with a writer. You are asks them questions about some copy they are working on. You're goal is to ask them enough question such that their answers can be used to expand on the existing text. That is, you want them to give you things one could use to expand on the existing text. As this is a dialogue, we will present it in the form of a transcript. The writer began by reading the copy they have so far. \n\n{{scratch}}\n\nThink about how your character would respond and craft an appropriate reply. You will provide the text of this reply along with one other piece of information as a JSON object. The object will have two key-value pairs. The first key-value pair's key is \"transcript\" and the value is that of the transcript above, starting with \"WRITER:\" the text of their copy and the subsequent questions and answers. Be sure to escape an quotation marks. And DO NOT repeat yourself (i.e., ask new questions). The second key-value pair has a key called \"reply\" and its value is the response you crafted above (i.e., it is the text of your character's reply to the above, your question for the writer). Make sure it's a question. Include only the text of your reply (e.g., do NOT preface the text with the name of the speaker). \n",
+    "model": "gpt-3.5-turbo-1106",
+    "temperature": 0.7,
+    "max_tokens": 2000,
+    "output": 1,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "Expand Text 3",
+    "hide_button": true
+  },
+  "Expand Text 3": {
+    "prompt": "YOU: {{passThrough[\"reply\"]}}\nWRITER: {{{{passThrough[\"reply\"]}}*}} [# Here unlike \"Expand Text 1\" we append to, rather than overwrite, the Scratch Pad, meaning we just add to the transcript before passing things on to \"Expand Text 4.\" Again we place an asterisk before the closing curly brackets to force user input. #]\n",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 6,
+    "behavior": "Expand Text 4",
+    "hide_button": true
+  },
+  "Expand Text 4": {
+    "prompt": "[# This looks a lot like \"Expand Text 2,\" but since it uses the Post-run Behavior DYNAMIC, it can trigger different templates based on the contents of the transcript (i.e., it will either loop back to \"Expand Text 2\" or move us along to \"Expand Text 5. #]You are an actor playing the role of a helpful writing assistant. In this scene you will interact with a writer. You are asks them questions about some copy they are working on. You're goal is to ask them enough question such that their answers can be used to expand on the existing text. That is, you want them to give you things one could use to expand on the existing text. As this is a dialogue, we will present it in the form of a transcript. The writer began by reading the copy they have so far. \n\n{{scratch}}\n\nYou will provide a JSON object in response to the above with a key named `next`. In your role as a writing assistant, consider if there is enough material in the above transcript to pad the original copy by 20%. You probably need at least three or four rounds of Q&A. However, if the replies are light on content, you may need more. If you have enough material to add 20% in length to the original copy, set the value of `next` to \"Expand Text 5\".  Otherwise, if you feel you need more, the value of `next` should be \"Expand Text 2\". \n",
+    "model": "gpt-3.5-turbo-1106",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 1,
+    "output_to": 4,
+    "behavior": "pass",
+    "hide_button": true
+  },
+  "Expand Text 5": {
+    "prompt": "[# Having collected more context from the user, we're now ready to produce some new text and copy that to the clipboard (Output To = Screen + clipboard). #]You are a helpful writing assistant. You've just had a conversation with a writer about some copy they're working on, and your task is to take what you learned from that conversation and rewrite the original copy such that its about 20% longer. Here's the text of your conversation. The writer began by reading the copy they have so far.\n\n{{scratch}}\n\nUse what you learned above to rewrite the original copy, adding details learned above. Do your best to keep the writer's voice and style while adding relevant details from your conversation to that first entry. Do NOT embellish! Do NOT make things up! Keep your additions firmly based on the content of your conversation, and don't make your copy too long! You goal is simply to flesh out the original text (i.e., the writer's first utterance above), adding about 20% in length. That being said, provide your new longer copy below.\n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0.7,
+    "max_tokens": 1000,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "chat",
+    "hide_button": true
+  },
+  "😡 Anger Translator (for reply to selected)": {
+    "prompt": "[# Select some text you want to reply to for context and then give your best angry reply. The LLM will then attempt to make it more palatable. #]You are an \"anger translator.\" Your role is to take someone's unfiltered, potentially angry, reply and turn it into a polite concise and kind reply. That is, you turn angry or blunt text into a respectful not angry version. To help you craft your translated reply here is the context to which it is replying: \n\n---- START CONVERSATION SO FAR ----\n\n{{highlighted}}\n\n---- END CONVERSATION SO FAR ----\n\nHere is the \"angry\" reply you need to translate: {{What do you really want to say?}}\n\n---\n\nNow reply with your translation. \n\n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "🤖 🐂 💩 BS with a \"bot\"": {
+    "prompt": "{{Yes?}} [# {{Yes?}} isn't a predefined variable. So, the user will be presented with a text input, and since Post-run Behavior is set to CHAT, this ends up being a plain old chat with an LLM. #]\n",
+    "model": "gpt-3.5-turbo-16k",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 1,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "chat",
+    "hide_button": false
+  },
+  "📄 Generic form letter (no LLM)": {
+    "prompt": "{{DayOfWeek}}, {{Month}} {{day}}, {{year}} [# These are all predefined variables, and since Output Type is set to Prompt, this will just echo out the text of this template with variables replaced. #]\n\n{{Who is this letter addressed to?}}:\n\n[This is where you ({{What's your name?}}) should put the text of your boilerplate letter.] \n\nSincerely, \n{{What's your name?}} [# Note: The user is only presented with \"What's your name?\" once because the default behavior is not to repeat user prompts. If you added an asterisk before the closing brackets, however, it would force user input. #]",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 1,
+    "behavior": "stop",
+    "hide_button": false
+  },
+  "🎲 🎲 Variables \"random outcomes\" and \"time\"": {
+    "prompt": "When building your prompts, consider using some of these preloaded variables. \n\nRandom Outcomes: \n\n- Coin Flip: {{coinFlip}}\n- D4 (1-4): {{d4}} \n- D6 (1-6): {{d6}}\n- D8 (1-8): {{d8}}\n- D% (0-9): {{d%}}\n- D20 (1-20): {{d20}}\n\nBrowser Date and Time:\n\n- Day of week (0-6): {{dayOfWeek}}\n- Day of week (English): {{DayOfWeek}}\n- Month (1-12): {{month}}\n- Month (01-12): {{month2d}}\n- Month (English): {{Month}}\n- Day of Month (0-31): {{day}}\n- Day of Month (01-31): {{day2d}}\n- Year: {{year}}\n- Hour (1-12): {{hours}}\n- Hour (01-12): {{hours2d}}\n- Hour (0-23): {{hours24}}\n- Hour (00-23): {{hours242d}}\n- AM or PM: {{ampm}}\n- Minute (0-59): {{minutes}}\n- Minute (00-59): {{minutes2d}}\n- Second (0-59): {{seconds}}\n- Second (00-59): {{seconds2d}}\n- All together: \n\nIt is {{hours}}:{{minutes2d}}:{{seconds2d}} {{ampm}} on {{DayOfWeek}}, {{Month}} {{day}}, {{year}}",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "stop",
+    "hide_button": false
+  },
+  "🔍 Variables \"from this page\"": {
+    "prompt": "When building your prompts, consider using text from the current webpage, be it selected/highlighted text or the whole page. For example...\n\nPage Data: \n\n- Highlighted words: {{nSelectedWords}}\n- Highlighted text: {{highlighted}}\n- Page words: {{nWordsOnPage}}\n- innerText of page: {{innerText}}",
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.7,
+    "max_tokens": 250,
+    "output": 0,
+    "json_mode": 0,
+    "output_to": 0,
+    "behavior": "stop",
+    "hide_button": false
+  }
+}
+  
+  localStorage.setItem('default_templates', JSON.stringify(default_prompts));
+  
+  if (localStorage.templates) {
+      templates = JSON.parse(localStorage.templates)
+  } else {
+      localStorage.setItem('templates', JSON.stringify(default_prompts));
+      templates = JSON.parse(JSON.stringify(default_prompts))
+  }
+
+
+// START ENCRYPTION 
+// adapted from https://raw.githubusercontent.com/bradyjoslin/webcrypto-example/master/script.js
+const buff_to_base64 = (buff) => btoa(
+  new Uint8Array(buff).reduce(
+      (data, byte) => data + String.fromCharCode(byte), ''
+      )
+  );
+  
+  const base64_to_buf = (b64) =>
+      Uint8Array.from(atob(b64), (c) => c.charCodeAt(null));
+  
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+  
+  const getPasswordKey = (password) =>
+      window.crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, [
+      "deriveKey",
+      ]);
+  
+  const deriveKey = (passwordKey, salt, keyUsage) =>
+      window.crypto.subtle.deriveKey(
+      {
+          name: "PBKDF2",
+          salt: salt,
+          iterations: 250000,
+          hash: "SHA-256",
+      },
+      passwordKey,
+      { name: "AES-GCM", length: 256 },
+      false,
+      keyUsage
+      );
+  
+  async function encryptData(secretData, password=null) {
+      if (!password) {
+          password = window.prompt("Password");
+      }
+      try {
+      const salt = window.crypto.getRandomValues(new Uint8Array(16));
+      const iv = window.crypto.getRandomValues(new Uint8Array(12));
+      const passwordKey = await getPasswordKey(password);
+      const aesKey = await deriveKey(passwordKey, salt, ["encrypt"]);
+      const encryptedContent = await window.crypto.subtle.encrypt(
+          {
+          name: "AES-GCM",
+          iv: iv,
+          },
+          aesKey,
+          enc.encode(secretData)
+      );
+  
+      const encryptedContentArr = new Uint8Array(encryptedContent);
+      let buff = new Uint8Array(
+          salt.byteLength + iv.byteLength + encryptedContentArr.byteLength
+      );
+      buff.set(salt, 0);
+      buff.set(iv, salt.byteLength);
+      buff.set(encryptedContentArr, salt.byteLength + iv.byteLength);
+      const base64Buff = buff_to_base64(buff);
+      return base64Buff;
+      } catch (e) {
+      console.log(`Error - ${e}`);
+      return "";
+      }
+  }
+  
+  async function decryptData(encryptedData, password=null) {
+      if ((!password) && (!sessionStorage.pwd)) {
+        password = window.prompt("Password");
+      } else if (sessionStorage.pwd) {
+        password = sessionStorage.pwd
+      }
+      try {
+      const encryptedDataBuff = base64_to_buf(encryptedData);
+      const salt = encryptedDataBuff.slice(0, 16);
+      const iv = encryptedDataBuff.slice(16, 16 + 12);
+      const data = encryptedDataBuff.slice(16 + 12);
+      const passwordKey = await getPasswordKey(password);
+      const aesKey = await deriveKey(passwordKey, salt, ["decrypt"]);
+      const decryptedContent = await window.crypto.subtle.decrypt(
+          {
+          name: "AES-GCM",
+          iv: iv,
+          },
+          aesKey,
+          data
+      );
+      sessionStorage.pwd = password;
+      return dec.decode(decryptedContent);
+      } catch (e) {
+      console.log(`Error - ${e}`);
+      alert("Key decryption failed. Reload page to try again, or continue, and enter a new key when prompted.")
+      return "";
+      }
+  }
+  // END ENCRYPTION 
+
+//
+// Load defaults
+//
+
+if (localStorage.api_key) {
+  api_key = localStorage.api_key
+} else {
+  api_key = ""
+  localStorage.setItem('api_key',api_key)
+}
+
+// user decrypt
+if (localStorage.api_key=="") { (async () => { api_key = await decryptData("99F4DCgorD7yONpbNYP4Ggy1vUnODq3Hp4F6lgYaHLDgDFloCqvss3rx0/O1XcREKtAaG3IsmRPavXHa/AjqZ6sUBfVdowQ4w/MshvHRH1RphPbeSh7cDUM++Yh/KuMuR1HGa/j/LfQWE1S+m1cUxmrLL7jxVUXEhNXJYYFPm1RyznB1ij19G6UBJL/iJv9oKyZgLE+ebWHugcialH8ul4rvk6twvhdz8CHO+oR8nGk=") })() }
+
+if (localStorage.api_base) {
+  api_base = localStorage.api_base
+} else {
+  api_base = "https://api.openai.com/v1/chat/completions"
+  localStorage.setItem('api_base',api_base)
+}
+
+var bodyText = "";
+var selectedText = "";
+var run_location = "";
+var question_arry = {};
+var last_question = "";
+var output_type = "";
+var llm_prompt = "";
+var llm_messages = [];
+var LLM_text_collection = "";
+var model = "";
+var template = "";
+var temperature = 0;
+var max_tokens = 0;
+var json_mode = 0;
+var output_to = 0;
+var behavior = "";
+var passThrough = "";
+var bubble = 0;
+var calls = 0;
+var overflow = 0;
+
+popup_CSS = `* {
+  box-sizing: border-box;
+}
+
+input:focus, textarea {
+  outline: none;
+}
+
+body {
+  /*--
+  font-family: georgia, 'times new roman', times, serif; issues with accents like ă
+  --*/
+  font-family: Söhne,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+  box-sizing: border-box;
+}
+
+#scratch_pad {
+  box-sizing: border-box;
+  width:100%;
+  height:100%;
+  padding:20px;
+  border:0px solid #ccc;
+  resize: none;
+  overflow-y: auto;
+}
+
+.text_wrap{
+  float:left;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+.input_text {
+  float:right;
+  font-size: 16px;
+  line-height: 20px;
+  margin: 0px 5px 15px 0;
+  max-width:100%;
+  margin-left:20%;
+  background:#eee;
+  border-radius:8px;
+  padding:15px;
+}
+
+.output_text {
+  float:left;
+  background:#425dd4;
+  font-size: 16px;
+  line-height: 20px;
+  color: white;
+  border-radius:8px;
+  margin: 0px 0 15px 0;
+  max-width:100%;
+  margin-right:20%;
+  padding:15px;
+}
+
+code {
+  background:#2c3e8e;
+}
+
+.code_wrapper {
+  padding:3px;
+  margin: 0px;
+  width:100%;
+  overflow-x: auto;
+  background:#2c3e8e;
+}
+
+.msg_text {
+  float:left;
+  font-family: Verdana, Geneva, sans-serif;
+  font-variant: small-caps;
+  width:100%;
+  text-align: center;
+  font-size: 14px;
+  color:#7d7878;
+  margin:0 0 15px 0;
+}`
+
+//
+// General functions
+//
+
+function start_spinner(target_id) {
+  var opts = {
+    lines: 13, // The number of lines to draw
+    length: 7, // The length of each line
+    width: 4, // The line thickness
+    radius: 10, // The radius of the inner circle
+    corners: 1, // Corner roundness (0..1)
+    rotate: 0, // The rotation offset
+    color: '#000', // #rgb or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 60, // Afterglow percentage
+    shadow: false, // Whether to render a shadow
+    hwaccel: false, // Whether to use hardware acceleration
+    className: 'spinner', // The CSS class to assign to the spinner
+    zIndex: 2e9, // The z-index (defaults to 2000000000)
+    top: '15', // Top position relative to parent in px
+    left: '0' // Left position relative to parent in px
+  };
+  var target = document.getElementById(target_id);
+  var spinner = new Spinner(opts).spin(target);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  var myButton = document.getElementById('send');
+  myButton.addEventListener('click', function() {
+    submit_text();
+  });  
+
+  var myChatAns = document.getElementById('chat_user_input');
+  myChatAns.addEventListener('keydown', submitChatOnEnter);  
+
+  var myChatButton = document.getElementById('chat_send');
+  myChatButton.addEventListener('click', function() {
+    submit_chat_text();
+  });    
+
+  var myContinueButton = document.getElementById('continueButton');
+  myContinueButton.addEventListener('click', function() {
+    submit_continue();
+  });    
+
+  var toPromptButton = document.getElementById('toPrompt');
+  toPromptButton.addEventListener('click', function() {
+    choose_prompt();
+  });
+
+  var credentialsButton = document.getElementById('credentialsButton');
+  credentialsButton.addEventListener('click', function() {
+    saveAPICred();
+  });
+
+  document.getElementById("api_base").addEventListener("keydown", saveOnEnter);
+  document.getElementById("api_key").addEventListener("keydown", saveOnEnter);
+
+  var mySettings = document.getElementById('config');
+  mySettings.addEventListener('click', function() {
+    window.open("options.html", 'options').focus();
+  });
+
+  var myScratch = document.getElementById('scratch');
+  myScratch.addEventListener('click', function() {
+    window.open("scratch.html", 'scratch').focus();
+  });
+
+  var myAbout = document.getElementById('about');
+  myAbout.addEventListener('click', function() {
+    window.open("https://github.com/SuffolkLITLab/prompts", '_projectPage').focus();
+  });
+
+  var myFeedback = document.getElementById('feedback');
+  myFeedback.addEventListener('click', function() {
+    window.open("https://github.com/SuffolkLITLab/prompts/issues", '_logIssues').focus();
+  });
+
+  var save_transcript = document.getElementById('save_transcript');
+  save_transcript.addEventListener('click', function() {
+      const d = new Date();
+      const day_list = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const month_list = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      saved_on =  day_list[d.getDay()] + ", " + month_list[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+
+      transcript_html = "<html>\n<head>\n<title>Transcript: "+ saved_on +"</title><style>\n"+popup_CSS+"\n</style>\n</head>\n<body>\n";
+      transcript_html += document.getElementById('transcript').innerHTML;
+      transcript_html += "<div class='msg_text'>Saved "+saved_on+" at " + (d.getHours() % 12 || 12) + ":" + ('0' + d.getMinutes()).slice(-2) + " " + (d.getHours() >= 12 ? 'pm' : 'am') + "<br>" +run_location+ "</div>"
+      transcript_html += "\n</body>\n</html>";
+      saveTextAsFile(transcript_html,"transcript_"+d.getFullYear()+"-"+('0'  + d.getMonth()).slice(-2)+"-"+('0'  + d.getDate()).slice(-2)+"T"+('0'  + d.getHours()).slice(-2)+('0' + d.getMinutes()).slice(-2)+('0'  + d.getSeconds()).slice(-2)+".html")
+  });
+
+  document.getElementById("restartButton").addEventListener("click", function() {
+    location.reload();
+  });
+
+  document.getElementById("restartButton_companion").addEventListener("click", function() {
+    location.reload();
+  });
+
+  document.getElementById("restartButton_companion_chat").addEventListener("click", function() {
+    location.reload();
+  });
+
+
+  if (!localStorage.scratch_pad) {
+    localStorage.setItem('scratch_pad',"")
+  } else {
+     document.getElementById('scratch_pad').value = localStorage.scratch_pad
+  }  
+
+  var BORDER_SIZE = 8;
+      
+  let m_pos;
+  function resize(e,disable=1){
+    if (disable!=1) {
+      if (window.innerWidth>=458) {
+        const dx = m_pos - e.x;
+        m_pos = e.x;
+        panel_width = parseInt(getComputedStyle(panel, '').width)
+        if (panel_width<180) {
+          panel_width = 181;
+        } else if ((window.innerWidth-panel_width)< 90) {
+          panel_width = window.innerWidth - 91;
+        }
+        panel.style.width = (panel_width + dx) + "px";
+        panel_l.style.right = (panel_width + dx) + "px";
+        localStorage.panel_w = (panel_width + dx);  
+      } else {
+        panel.style.width = "100%"
+        panel_l.style.right = "100%"
+      }
+    }
+  }
+
+  if (window.innerWidth>=458) {
+    panel_width = localStorage.panel_w
+    if ((panel_width=="100%") & (window.getComputedStyle(document.getElementById("inline_scratch"), null).display =="none")) {
+      document.getElementById("main_wrapper").style.width = "100%"
+      document.getElementById("inline_scratch").style.right = "100%"  
+    } else if (panel_width>(window.innerWidth-80)) {
+      document.getElementById("main_wrapper").style.width =  "50%"
+      document.getElementById("inline_scratch").style.right = "50%"
+    } else if (panel_width>0) {
+      document.getElementById("main_wrapper").style.width = localStorage.panel_w + "px";
+      document.getElementById("inline_scratch").style.right = (parseInt(localStorage.panel_w)) + "px";
+    } else {
+      if (window.getComputedStyle(document.getElementById("inline_scratch"), null).display =="none") {
+        document.getElementById("main_wrapper").style.width = "100%"
+        document.getElementById("inline_scratch").style.right = "100%"    
+      } else {
+        panel_width = 450;
+        localStorage.panel_w = panel_width
+        document.getElementById("main_wrapper").style.width = localStorage.panel_w + "px";
+        document.getElementById("inline_scratch").style.right = (parseInt(localStorage.panel_w)) + "px";  
+      }
+    }
+  } else {
+    document.getElementById("main_wrapper").style.width = "100%"
+    document.getElementById("inline_scratch").style.right = "100%"
+    localStorage.panel_w = "100%"
+  }
+
+  var panel = document.getElementById("main_wrapper");
+  panel.addEventListener("mousedown", function(e){
+    if (e.offsetX < BORDER_SIZE) {
+      m_pos = e.x;
+      document.addEventListener("mousemove", resize, false);
+    }
+  }, false);
+  
+  var panel_l = document.getElementById("inline_scratch");
+  document.addEventListener("mouseup", function(){
+      document.removeEventListener("mousemove", resize, false);
+  }, false);
+
+  // Save text to localStorage on change
+  document.getElementById('scratch_pad').addEventListener('input', function() {
+    localStorage.setItem('scratch_pad', this.value);
+    current_text = this.value;
+  });
+
+});
+
+//
+// Construct, submit, and handel prompts
+//
+
+function choose_prompt(choice) {
+
+  calls+=1;
+  console.log("Choosing template: "+choice)
+  console.log("Runs w/o interaction: "+calls)
+
+  if (calls>=20) {
+    if (confirm(`Are you in a loop? You've made 20 prompt calls without human interaction. Choose "OK" to continue or "Cancel" to stop here.`) == true) {
+      calls = 0;
+    } else {
+      insert_restart();
+    }
+  }
+
+  if (calls<20) {
+
+    output_type = templates[choice]["output"]
+    template = templates[choice]["prompt"];
+    model = templates[choice]["model"];
+    max_tokens = templates[choice]["max_tokens"]; // How long the answer should be 
+    temperature = templates[choice]["temperature"]; // How free-ranging the reply is 0-1 
+    json_mode = templates[choice]["json_mode"];
+    output_to = templates[choice]["output_to"];
+    behavior = templates[choice]["behavior"];
+
+    llm_prompt = template
+
+    // remove comments
+    llm_prompt = llm_prompt.replace(/\[\#[\s\S]*?\#\]/g, "");
+
+    if (llm_prompt){
+      abandon_prompt = 0;
+      // Place selected text into template
+      if (selectedText=="" && template.match(/{{highlighted}}/g)) {
+        console.log("Unable to find highlighted/selected text for this page.");
+        if (confirm('Unable to find highlighted/selected text for this page. Choose "OK" to continue with an empty value or "Cancel" to stop this template.') == true) {
+          llm_prompt = llm_prompt.replace(/{{highlighted}}/g, ""); 
+          llm_prompt = llm_prompt.replace(/{{nSelectedWords}}/g, 0); 
+        } else {
+          abandon_prompt = 1;
+        }
+      } else {
+        if (selectedText.length>0) {
+          llm_prompt = llm_prompt.replace(/{{highlighted}}/g, selectedText.replace(/({|})/g, "\\$1")); 
+          try {
+            llm_prompt = llm_prompt.replace(/{{nSelectedWords}}/g, selectedText.match(/\b(\w+)\b/g).length);             
+          } catch (error) {
+            llm_prompt = llm_prompt.replace(/{{nSelectedWords}}/g, "unknown");    
+          }
+        } else {
+          llm_prompt = llm_prompt.replace(/{{highlighted}}/g, ""); 
+
+          llm_prompt = llm_prompt.replace(/{{nSelectedWords}}/g, 0); 
+        }
+      }
+
+      if (abandon_prompt == 0) {
+        // Place page text into template
+        if (bodyText=="" && template.match(/{{innerText}}/g)) {
+          console.log("Unable to parse innerText for this page.");
+          if (confirm('Unable to parse innerText for this page. Choose "OK" to continue with an empty value or "Cancel" to stop this prompt.') == true) {
+            llm_prompt = llm_prompt.replace(/{{innerText}}/g, "");
+            llm_prompt = llm_prompt.replace(/{{nWordsOnPage}}/g, 0);
+          } else {
+            abandon_prompt = 1;
+          }
+        } else {
+          if (bodyText.length>0) {
+            llm_prompt = llm_prompt.replace(/{{innerText}}/g, bodyText.replace(/({|})/g, "\\$1"));
+            try {
+              llm_prompt = llm_prompt.replace(/{{nWordsOnPage}}/g, bodyText.match(/\b(\w+)\b/g).length);              
+            } catch (error) {
+              llm_prompt = llm_prompt.replace(/{{nWordsOnPage}}/g, "unknown");       
+            }
+          } else {
+            llm_prompt = llm_prompt.replace(/{{innerText}}/g, "");
+            llm_prompt = llm_prompt.replace(/{{nWordsOnPage}}/g, 0);
+          }
+        }
+      }
+
+    } else {
+      alert(`Can't read prompt. `)
+      abandon_prompt = 1;
+
+    }
+
+    if (abandon_prompt == 0) {
+      // Place scratch pad text into template
+      llm_prompt = llm_prompt.replace(/{{scratch}}/g, localStorage.getItem('scratch_pad'));
+      try {
+        console.log("Attempting to parse Scratch Pad for JSON...")
+        scratch = JSON.parse(localStorage.getItem('scratch_pad').trim());
+      } catch (error) {
+        console.log("Scratch Pad isn't JSON.")
+      }
+      var scratchjson = llm_prompt.match(/{{scratch\["[a-zA-Z_-]+"\]}}/g);
+      // Loop through each variable and present it as a question
+      if (scratchjson) {
+        console.log("Checking scratch...");
+        for (item of scratchjson) {
+            key = [...item.matchAll(/{{scratch\["([a-zA-Z_]+)"\]}}/g)][0][1];
+            console.log(" - scratch[\""+key+"\"]="+scratch[key]);
+            llm_prompt = llm_prompt.replace("{{scratch[\""+key+"\"]}}", scratch[key]);  
+        }
+      }
+      
+      if (passThrough.constructor === ({}).constructor) {
+        llm_prompt = llm_prompt.replace(/{{passThrough}}/g, JSON.stringify(passThrough));
+      } else {
+        llm_prompt = llm_prompt.replace(/{{passThrough}}/g, passThrough);
+      }
+      var passThroughjson = llm_prompt.match(/{{passThrough\["[a-zA-Z_-]+"\]}}/g);
+      // Loop through each variable and present it as a question
+      if (passThroughjson) {
+        console.log("Checking passThrough...");
+        for (item of passThroughjson) {
+            key = [...item.matchAll(/{{passThrough\["([a-zA-Z_]+)"\]}}/g)][0][1];
+            console.log(" - passThrough[\""+key+"\"]="+passThrough[key]);
+            llm_prompt = llm_prompt.replace("{{passThrough[\""+key+"\"]}}", passThrough[key]);  
+        }
+      }
+
+      // ------------------------------------------------------
+      // Add predefined variables to the the template
+      // ------------------------------------------------------
+    
+      // Coin
+      flip = Math.floor(Math.random() * 2)
+      flip_out = ["heads","tails"]
+      llm_prompt = llm_prompt.replace(/{{coinFlip}}/g,flip_out[flip]);
+      // Dice 
+      roll = Math.floor(Math.random() * 4) + 1
+      llm_prompt = llm_prompt.replace(/{{d4}}/g,roll);
+      roll = Math.floor(Math.random() * 6) + 1
+      llm_prompt = llm_prompt.replace(/{{d6}}/g,roll);
+      roll = Math.floor(Math.random() * 8) + 1
+      llm_prompt = llm_prompt.replace(/{{d8}}/g,roll);
+      roll = Math.floor(Math.random() * 10)
+      llm_prompt = llm_prompt.replace(/{{d%}}/g,roll);
+      roll = Math.floor(Math.random() * 12) + 1
+      llm_prompt = llm_prompt.replace(/{{d12}}/g,roll);
+      roll = Math.floor(Math.random() * 20) + 1
+      llm_prompt = llm_prompt.replace(/{{d20}}/g,roll);
+
+      // Dates 
+      const d = new Date();
+      const day_list = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      llm_prompt = llm_prompt.replace(/{{dayOfWeek}}/g, d.getDay()); // number
+      llm_prompt = llm_prompt.replace(/{{DayOfWeek}}/g, day_list[d.getDay()]); // english
+      const month_list = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      llm_prompt = llm_prompt.replace(/{{month}}/g, d.getMonth()); // number
+      llm_prompt = llm_prompt.replace(/{{month2d}}/g, ('0'  + d.getMonth()).slice(-2)); // number
+      llm_prompt = llm_prompt.replace(/{{Month}}/g, month_list[d.getMonth()]); // english
+      llm_prompt = llm_prompt.replace(/{{day}}/g, d.getDate()); // day of month
+      llm_prompt = llm_prompt.replace(/{{day2d}}/g, ('0'  + d.getDate()).slice(-2)); // day of month
+      llm_prompt = llm_prompt.replace(/{{year}}/g, d.getFullYear()); // YEAR
+      llm_prompt = llm_prompt.replace(/{{hours24}}/g, d.getHours()); // hours (out of 24)
+      llm_prompt = llm_prompt.replace(/{{hours242d}}/g, ('0'  + d.getHours()).slice(-2)); // hours (out of 24)
+      llm_prompt = llm_prompt.replace(/{{hours}}/g, (d.getHours() % 12 || 12)); // hours (out of 12)
+      llm_prompt = llm_prompt.replace(/{{hours2d}}/g, ('0'  + (d.getHours() % 12 || 12)).slice(-2)); // hours (out of 12)
+      llm_prompt = llm_prompt.replace(/{{ampm}}/g, d.getHours() >= 12 ? 'pm' : 'am');
+      llm_prompt = llm_prompt.replace(/{{minutes}}/g, d.getMinutes());
+      llm_prompt = llm_prompt.replace(/{{minutes2d}}/g, ('0'  + d.getMinutes()).slice(-2));
+      llm_prompt = llm_prompt.replace(/{{seconds}}/g, d.getSeconds());
+      llm_prompt = llm_prompt.replace(/{{seconds2d}}/g, ('0'  + d.getSeconds()).slice(-2));
+
+      if (llm_prompt.trim()=="") {
+        alert(`Error: Empty prompt. `)
+        abandon_prompt = 1;
+      } else {
+        build_prompt();
+      }
+      
+    }
+  }
+
+}
+
+function scroll2Q(id) {
+  document.getElementById('save_transcript').style.display='block';
+
+  if (bubble>0) {
+    var top = document.getElementById(id).offsetTop; //Getting Y of target element
+    console.log("Jump to Y for ("+id+"): "+top);
+    //adapted from https://github.com/Yappli/smooth-scroll
+    moving_frequency = 0.75
+    var getScrollTopDocumentAtBegin = document.documentElement.scrollTop + document.body.scrollTop;
+    console.log("Y:",top,getScrollTopDocumentAtBegin)
+    var hop_count = Math.round((top - getScrollTopDocumentAtBegin)/moving_frequency)
+    var gap = (top - getScrollTopDocumentAtBegin) / hop_count;
+    for(var i = 1; i <= hop_count; i++)
+        {
+          (function()
+            {
+              var hop_top_position = gap*i;
+                setTimeout(function(){  window.scrollTo(0, hop_top_position + getScrollTopDocumentAtBegin); }, moving_frequency*i);
+              })();
+        }
+  }
+}
+
+function build_prompt() {
+  console.log("Building prompt...");
+  LLM_text_collection = "";
+      
+  // Make a list of all other variables (i.e. text of the form {{variable}}). 
+  var questions = llm_prompt.match(/{{[^}]+}}/g)
+
+  console.log("Questions:",questions)
+  document.getElementById('button_list').style.display='none';
+  document.getElementById('transcript').style.display='block';
+
+  // Loop through each variable and present it as a question
+  if (questions) {
+    for (question of questions) {
+      last_question = question;
+      if ((!question_arry[question]) || (question.match(/\*}}$/))) {
+        question_ = question.replace(/\*}}$/,"}}")
+        question_ = question_.replace(/{|}/g,"");
+        if (document.getElementById('thinking_box').style.display=="block") {
+          setTimeout(() => {
+            document.getElementById('thinking_box').style.display='none';
+            document.getElementById('text_input').style.display='block';
+            document.getElementById('user_input').focus();
+            bubble+=1;
+            document.getElementById('output_window').innerHTML += "<div class='text_wrap' id='text_"+bubble+"'><div class='output_text'>"+question_+"</div></div>";
+            scroll2Q("text_"+bubble);
+            document.getElementById("user_input").addEventListener("keydown", submitOnEnter);
+          }, 300);        
+        } else {
+          document.getElementById('thinking_box').style.display='none';
+          document.getElementById('text_input').style.display='block';
+          document.getElementById('user_input').focus();
+          bubble+=1;
+          document.getElementById('output_window').innerHTML += "<div class='text_wrap' id='text_"+bubble+"'><div class='output_text'>"+question_+"</div></div>";
+          scroll2Q("text_"+bubble);
+          document.getElementById("user_input").addEventListener("keydown", submitOnEnter);
+        }
+        break
+      } else {
+        llm_prompt = llm_prompt.replaceAll(last_question,question_arry[last_question]);
+        build_prompt(0);
+        break
+      }
+    }
+  } else {
+
+    document.getElementById('thinking_box').style.display='block';
+
+    // Count the words in the prompt
+    words = llm_prompt.match(/\b(\w+)\b/g).length;
+    characters = llm_prompt.length;
+    token_est = Math.round(words*1.75)
+
+    console.log("Words in prompt: "+words+" (~"+token_est+" tokens)\nMODEL: "+model+"\nPROMPT:\n\n"+llm_prompt)
+
+    if (output_type==1) {
+      console.log("Mode: Calling LLM")
+      openai_call(llm_prompt)
+    } else {
+      console.log("Mode: Prompt only")
+      after_build(llm_prompt)
+    }
+    
+  }
+}
+
+function submit_text() {
+  
+  answer =  document.getElementById('user_input').value;
+  if (answer.length>0) {
+    console.log("Sending text...")
+    calls=0;
+    document.getElementById('text_input').style.display='none'
+    document.getElementById('thinking_box').style.display='block';
+    bubble+=1;
+    document.getElementById('output_window').innerHTML += "<div class='text_wrap' id='text_"+bubble+"'><div class='input_text'>"+answer+"</div></div>";
+    scroll2Q("text_"+bubble);
+    llm_prompt = llm_prompt.replaceAll(last_question, answer);
+    question_arry[last_question] = answer;
+    console.log("Q: "+question_+"\nA: "+answer);
+    document.getElementById('user_input').value = "";
+    build_prompt(0);  
+  } else {
+    alert("You cannot leave this input blank.");
+    document.getElementById('user_input').focus();
+  }
+}
+
+function saveAPICred() {
+  localStorage.setItem("api_base",document.getElementById('api_base').value)
+  localStorage.setItem("api_key",document.getElementById('api_key').value)
+  document.getElementById('credentials').style.display='none';
+  document.getElementById('output_window').innerHTML += "<div class='msg_text'>credentials saved</div>";
+  insert_restart();
+}
+
+function saveOnEnter(event) {
+  if (event.which === 13) {
+      if (!event.repeat) {
+        saveAPICred()
+      }
+      event.preventDefault(); // Prevents the addition of a new line in the text field
+  }
+}
+
+function submitOnEnter(event) {
+  if (!event.shiftKey && event.which === 13) {
+      if (!event.repeat) {
+        submit_text();
+      }
+      event.preventDefault(); // Prevents the addition of a new line in the text field
+  }
+}
+
+function submit_chat_text() {
+  answer =  document.getElementById('chat_user_input').value;
+  if (answer.length>0) {
+    console.log("Sending text...")
+    calls=0;
+    document.getElementById('chat_text_input').style.display='none'
+    document.getElementById('thinking_box').style.display='block';
+    bubble+=1;
+    document.getElementById('output_window').innerHTML += "<div class='text_wrap' id='text_"+bubble+"'><div class='input_text'>"+answer+"</div></div>";
+    scroll2Q("text_"+bubble);
+    document.getElementById('chat_user_input').value = "";
+    openai_call(answer)  
+  } else {
+    alert("You cannot leave this input blank.");
+    document.getElementById('user_input').focus();
+  }
+}
+
+function submitChatOnEnter(event) {
+  if (!event.shiftKey && event.which === 13) {
+      if (!event.repeat) {
+        submit_chat_text();
+      }
+      event.preventDefault(); // Prevents the addition of a new line in the text field
+  }
+}
+
+function submit_continue() {
+  console.log("Sending continue request...")
+  calls=0;
+  document.getElementById('continue_gen').style.display='none';
+  document.getElementById('thinking_box').style.display='block';
+  openai_call("You got cutoff. Pickup where you left off and continue.")  
+}
+
+async function openai_call(prompt_text) {
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", api_base);
+
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("Authorization", "Bearer "+api_key);
+
+  xhr.onreadystatechange = function () {
+     if (xhr.readyState === 4) {
+      try {
+        console.log(xhr.responseText);
+        LLM_text = JSON.parse(xhr.responseText)["choices"][0]["message"]["content"];
+        llm_messages.push({"role": "assistant", "content": LLM_text})
+        after_build(LLM_text, JSON.parse(xhr.responseText)["choices"][0]["finish_reason"]);
+      } catch (error) {
+        llm_messages.pop();
+        try {
+          if (JSON.parse(xhr.responseText)["error"]["code"]=="context_length_exceeded") {
+            est_token_limit = [...JSON.parse(xhr.responseText)["error"]["message"].matchAll(/\d+/g)]
+            keep_n = Math.floor((est_token_limit[0] - max_tokens)/2);
+            if (llm_messages.length==0) {
+              console.log("ERROR: The prompt and its expected reply exceeds the token limit for this model.");
+              LLM_text = "ERROR: The prompt and its expected reply exceeds the token limit for this model."
+              output_to=0;
+              behavior="stop"
+              after_build(LLM_text)
+
+            } else {
+              console.log("ERROR: Over the course of this chat, you have reached the token limit for this model.");
+              LLM_text = "ERROR: Over the course of this chat, you have reached the token limit for this model."
+              output_to=0;
+              behavior="stop"
+              after_build(LLM_text)
+
+            }
+          } else if ((output_type==1) & (json_mode==1) & (JSON.parse(xhr.responseText)["error"]["message"].includes("response_format"))) {
+            console.log("Removing json flag, trying again...")
+            json_mode = 2;
+            openai_call(prompt_text);
+          } else {
+            LLM_text = `There was an ERROR calling the LLM. Make sure you are using a valid endpoint and API Key. The credentials may have expired, or the model used by this tools' author my have been retired.`
+            output_to=0;
+            behavior="stop"
+            //LLM_text += "\n"+error            
+            after_build(LLM_text);
+            document.getElementById('restartButton').style.display='none';
+            document.getElementById('credentials').style.display='block';
+            document.getElementById('api_base').value = localStorage.api_base || "https://api.openai.com/v1/chat/completions";
+            document.getElementById('api_key').value = localStorage.api_key || "";
+            document.getElementById('api_key').focus();
+          }            
+        } catch (error) {
+          LLM_text = `There was an ERROR calling the LLM. Make sure you are using a valid endpoint and API Key. The credentials may have expired, or the model used by this tools' author my have been retired.`
+          output_to=0;
+          behavior="stop"
+          //LLM_text += "\n"+error            
+          after_build(LLM_text)
+          document.getElementById('restartButton').style.display='none';
+          document.getElementById('credentials').style.display='block';
+          document.getElementById('api_base').value = localStorage.api_base || "https://api.openai.com/v1/chat/completions";
+          document.getElementById('api_key').value = localStorage.api_key || "";
+          document.getElementById('api_key').focus();
+      }
+      }
+    }};
+
+    if (behavior!="chat") { 
+      llm_messages = []  
+    }
+
+    llm_messages.push({"role": "user", "content": prompt_text})
+    var data = {
+              "model": model, 
+              "messages": llm_messages,
+              "temperature": temperature,
+              "max_tokens": max_tokens
+            };
+
+  if (json_mode==1) {
+    console.log("Attempting JSON mode");
+    data["response_format"]={ "type": "json_object" }  
+  }
+
+  console.log(data);
+
+  return xhr.send(JSON.stringify(data));    
+  
+}
+
+
+function accountForHTML(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function insert_restart(){
+  document.getElementById('restartButton').style.display='block';
+  document.getElementById("restartButton").focus(); 
+}
+
+function after_build(LLM_text,finish_reason="stop") {
+  
+  if ((overflow==1) && (behavior=="chat")) {
+    LLM_text_collection += LLM_text;
+  } else {
+    LLM_text_collection = LLM_text;
+  }
+
+  // add line breaks for screen output
+  LLM_text_formatted = accountForHTML(LLM_text);
+  LLM_text_formatted = LLM_text_formatted.replaceAll(/```([^`]*)```\n?/g, "<pre class='code_wrapper'><code>$1</code></pre>");
+  LLM_text_formatted = LLM_text_formatted.replaceAll(/`([^`]*)`/g, "<code>$1</code>");
+  LLM_text_formatted = LLM_text_formatted.trim();
+  document.getElementById('thinking_box').style.display='none';
+
+  // If not hidden
+  if (output_to<4) {
+    bubble+=1;
+    document.getElementById('output_window').innerHTML += "<div class='text_wrap' id='text_"+bubble+"'><div class='output_text' style='white-space: pre-wrap;'>"+LLM_text_formatted+"</div></div>";
+    scroll2Q("text_"+bubble);
+  }
+
+  // Check on json formatting
+  if (json_mode>=1) {
+    console.log("Attempting to parse JSON...")
+    try {
+      passThrough = JSON.parse(LLM_text_collection.trim());
+      LLM_text_collection = JSON.stringify(passThrough, null, 2);        
+    } catch (error) {
+      alert("Warning: Output isn't JSON. Leaving as is! This may cause issues.")
+      passThrough = LLM_text_collection;     
+    }
+  } else {
+    passThrough = LLM_text_collection;
+  }
+
+  output_words = LLM_text_collection.match(/\b(\w+)\b/g).length;
+  output_characters = LLM_text_collection.length;
+
+  // Output location
+  if (output_to==1) {
+    document.getElementById('output_window').innerHTML += "<div class='msg_text'>above output copied to clipboard (~"+output_words.toLocaleString()+" words / ~"+output_characters.toLocaleString()+" characters)</div>";
+    copy_to_clipboard(LLM_text_collection);
+  } else if (output_to==2) {
+    document.getElementById('scratch_pad').value += LLM_text_collection;
+    document.getElementById('output_window').innerHTML += "<div class='msg_text'>above output appended to scratch pad (~"+output_words.toLocaleString()+" words / ~"+output_characters.toLocaleString()+" characters)</div>";
+    localStorage.setItem('scratch_pad', localStorage.getItem('scratch_pad')+LLM_text); // used LLM_text, not LLM_text_collection because will have already been appended
+  } else if (output_to==3) {
+    document.getElementById('scratch_pad').value = LLM_text_collection;
+    document.getElementById('output_window').innerHTML += "<div class='msg_text'>above output replaced scratch pad (~"+output_words.toLocaleString()+" words / ~"+output_characters.toLocaleString()+" characters)</div>";
+    localStorage.setItem('scratch_pad', LLM_text_collection);
+  } else if (output_to==5) {
+    //document.getElementById('output_window').innerHTML += "<div class='msg_text'>above output copied to clipboard</div>";
+    copy_to_clipboard(LLM_text_collection);
+  } else if (output_to==6) {
+    document.getElementById('scratch_pad').value += LLM_text_collection;
+    //document.getElementById('output_window').innerHTML += "<div class='msg_text'>above output appended to scratch pad</div>";
+    localStorage.setItem('scratch_pad', localStorage.getItem('scratch_pad')+LLM_text); // used LLM_text, not LLM_text_collection because will have already been appended
+  } else if (output_to==7) {
+    document.getElementById('scratch_pad').value = LLM_text_collection;
+    //document.getElementById('output_window').innerHTML += "<div class='msg_text'>above output replaced scratch pad</div>";
+    localStorage.setItem('scratch_pad', LLM_text_collection);
+  } 
+  
+  // Behavior
+
+  overflow=0;
+
+  if ((finish_reason=="length") && (behavior=="chat")) {
+    overflow=1;
+    document.getElementById('continue_gen').style.display='block';
+    calls=0;
+    scroll2Q("text_"+bubble); 
+
+  } else if (behavior=="stop") {
+    // End
+    //document.getElementById('output_window').innerHTML += "<div class='msg_text'>end</div>";
+    calls=0;
+    insert_restart();
+    scroll2Q("text_"+bubble); 
+
+  } else if (behavior=="chat") {
+    // Continue chat
+    //document.getElementById('output_window').innerHTML += "<div class='msg_text'>engage with the above</div>";
+    document.getElementById('chat_text_input').style.display='block';
+    document.getElementById('chat_user_input').focus();
+    calls=0;
+    scroll2Q("text_"+bubble); 
+
+  } else if (behavior=="file") {
+    // Save to file
+    document.getElementById('output_window').innerHTML += "<div class='msg_text'>triggered save to file</div>";
+    calls=0;
+    insert_restart();
+    scroll2Q("text_"+bubble); 
+    saveTextAsFile(LLM_text_collection,"output.txt")
+
+  } else if (behavior=="pass") {
+    // passThrough
+    if (passThrough["next"]){
+      try {
+        choose_prompt(passThrough["next"])        
+      } catch (error) {
+        alert('No matching prompt found for "'+passThrough["next"]+'." Defaulting to FULL STOP')
+        //document.getElementById('output_window').innerHTML += "<div class='msg_text'>end</div>";          
+        calls=0;
+        insert_restart();
+        scroll2Q("text_"+bubble); 
+      }
+    } else {
+      alert('No value found for passThrough["next"] defaulting to FULL STOP')
+      //document.getElementById('output_window').innerHTML += "<div class='msg_text'>end</div>";
+      calls=0;
+      insert_restart();
+      scroll2Q("text_"+bubble); 
+    }
+
+  } else {
+    // Run another prompt
+    choose_prompt(behavior)
+
+  }
+
+}
+
+
+// Get the selected text
+function getSelectionFromPage() {
+  const focusedElement = document.activeElement;
+
+  if (focusedElement) {
+    if (focusedElement.tagName.toLowerCase() === 'textarea' || focusedElement.tagName.toLowerCase() === 'input') {
+      if (typeof focusedElement.selectionStart === 'number' && typeof focusedElement.selectionEnd === 'number') {
+        selectedText = focusedElement.value.substring(focusedElement.selectionStart, focusedElement.selectionEnd);
+      } else if (focusedElement.selectionStart === undefined) {
+        // For input elements in some browsers like Firefox
+        const selection = focusedElement.value.substring(
+          focusedElement.selectionStart, focusedElement.selectionEnd
+        );
+        if (selection) {
+          selectedText = selection;
+        }
+      }
+    }
+  }
+  let body_text = document.getElementById('scratch_pad').value;
+
+  try {
+    let run_location = window.location.toString();    
+  } catch (error) {
+    let run_location = "location unknown";
+  }
+
+  console.log(selectedText,body_text,run_location)
+
+  return [selectedText,body_text,run_location]
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  templates = JSON.parse(localStorage.templates)
+  const buttonList = document.getElementById('button_list');
+
+  //templates.forEach(function(item, index) {
+  for (const [key, value] of Object.entries(templates)) {
+
+    if (templates[key]["hide_button"]==false) {
+      // Create button element
+      const button = document.createElement('button');
+      button.textContent = key; // Set button text
+      button.id = `template_`+key.replace(/[^a-zA-Z]/g,"_"); // Set button id
+      button.dataset.choice = key; // Set data-choice attribute
+      button.style.width = '100%'; // Set styles
+      button.style.marginBottom = '5px';
+
+      // Add event listener to button
+      button.addEventListener('mousedown', function() {
+        text_arry = getSelectionFromPage(); selectedText = text_arry[0]; bodyText = text_arry[1];
+      });
+      button.addEventListener('click', function() {
+        choose_prompt(this.dataset.choice); // 'this' refers to the button clicked
+      });
+
+      // Append button to button list in DOM
+      buttonList.appendChild(button);
+    }
+
+  };
+
+  start_spinner('thinking');
+
+});
+
+window.onbeforeunload = function () {
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+        
+  var open_scratch = document.getElementById('open_scratch');
+  document.getElementById('open_scratch').addEventListener('click', function() {
+      if (confirm('This will replace the current scratch pad contents with the file you upload. Choose "OK" to continue or "Cancel" to keep things as they are.') == true) {
+          document.getElementById('fileInput').click(); // Trigger file input
+      }
+  });
+  document.getElementById('fileInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) {
+          return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          const contents = e.target.result;
+          try {
+              document.getElementById('scratch_pad').value = contents
+              localStorage.setItem('scratch_pad', contents);
+              //const json = JSON.parse(contents);
+              //updatePromptsFromJson(json); // Function to update prompts
+          } catch (error) {
+              console.error("Error reading file: ", error);
+              // Handle errors (invalid file, etc.)
+          }
+      };
+      reader.readAsText(file);
+  });
+
+  var save_scratch = document.getElementById('save_scratch');
+  save_scratch.addEventListener('click', function() {
+      saveTextAsFile(document.getElementById('scratch_pad').value,"scratch_pad.txt")
+  });
+
+});
+</script>
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	input:focus, textarea {
+		outline: none;
+	}
+	
+	body {
+		font-family: Söhne,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+		box-sizing: border-box;
+	}
+
+
+	#send {
+		float:left;
+		width:75%;
+		margin: 5px 0 0px 0;
+	}
+
+	#chat_send {
+		float:left;
+		width:75%;
+		margin: 5px 0 0px 0;
+	}
+
+	#restartButton_companion {
+		float:right;
+		width:24%;
+		margin: 5px 0 10px 0;
+	}
+
+	#restartButton_companion_chat {
+		float:right;
+		width:24%;
+		margin: 5px 0 10px 0;
+	}
+	
+	button {
+		-webkit-appearance:none;
+		opacity: 1;
+		border-radius: 3px;
+		font-size: 14px;
+		color:black;
+		border: 1px solid #7b7b7b;
+		padding: 3px 10px;
+		background: rgb(211, 211, 211);
+	}
+	
+	textarea {
+		font-size: 14px;
+	}
+
+	#scratch_pad {
+		box-sizing: border-box;
+		width:100%;
+		height:100%;
+		padding:20px;
+		border:0px solid #ccc;
+		resize: none;
+		overflow-y: auto;
+	}
+
+	.text_wrap{
+		float:left;
+		width:100%;
+		margin:0;
+		padding:0;
+	}
+
+	.input_text {
+		float:right;
+		font-size: 15px;
+		line-height: 20px;
+		margin: 0px 5px 15px 0;
+		max-width:100%;
+		margin-left:20%;
+		background:#eee;
+		border-radius:8px;
+		padding:15px;
+	}
+
+	.output_text {
+		float:left;
+		background:#425dd4;
+		font-size: 15px;
+		line-height: 20px;
+		color: white;
+		border-radius:8px;
+		margin: 0px 0 15px 0;
+		max-width:100%;
+		margin-right:20%;
+		padding:15px;
+	}
+
+	code {
+		background:#2c3e8e;
+	}
+
+	.code_wrapper {
+		padding:3px;
+		margin: 0px;
+		width:100%;
+		overflow-x: auto;
+		background:#2c3e8e;
+	}
+
+	.msg_text {
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-variant: small-caps;
+		width:100%;
+		text-align: center;
+		font-size: 14px;
+		color:#7d7878;
+		margin:0 0 15px 0;
+	}
+
+	/* -- the below is needed for interactions -- */
+
+	#button_list {
+		min-height:150px;
+		margin-bottom: 3px;
+	}
+
+	#thinking_box{
+		float:left;
+		width:100%;
+		display:none;
+	}
+
+	#thinking {
+		width:43px;
+		height:75px;
+		margin:0 auto;
+	}
+
+	#user_input{
+		width:100%;
+		height:50px;
+	}
+
+	#chat_user_input{
+		width:100%;
+		height:50px;
+	}
+
+	#continue_gen {
+		float:left;
+		width:100%;
+		margin: 0px 0 10px 0;
+	}
+
+	#continueButton{
+		width:100%;
+	}
+
+	#credentials {
+		float:left;
+		width:100%;
+		margin: 0px 0 10px 0;
+	}
+
+	#credentials_table{
+		width:100%;
+		margin: 0 0 5px 0;
+	}
+
+	#credentialsButton{
+		width:100%;
+	}
+
+	#restartButton{
+		display:none;
+		width:100%;
+		margin: 0 0 10px 0;
+	}
+
+	#save_transcript{
+		display:none;
+		float:left;
+		font-family: Verdana, Geneva, sans-serif;
+		font-variant: small-caps;
+		width:100%;
+		text-align: center;
+		font-size: 14px;
+		color:#7d7878;
+		margin:0 0 15px 0;
+	}
+
+	/*-- The below differes between export and non --*/
+
+	.custom_header{
+		margin: 0 0 10px 0;
+	}
+
+	#inline_scratch {
+		display:none;
+	}
+
+	#main_wrapper{
+		max-width:650px;
+		margin: 0px auto;
+	}
+
+	#inner_wrapper{
+		height:100%;
+		width:100%;
+		padding: 0;
+	}
+
+	.footer {
+		display:none;
+	}
+</style>
+</head>
+<body>
+  <div id="inline_scratch">
+    <div class="file_menu">
+      <a href="#" id="open_scratch" class="files">Open</a>  
+      <input type="file" id="fileInput" style="display: none;"/>
+      <a href="#" id="save_scratch" class="files">Save</a>   
+    </div>
+    <div class="scratch_frame">
+      <textarea id="scratch_pad" placeholder="This space holds text for use with the prompt interactions found to the right."></textarea>
+    </div>
+  </div> 
+  <div id="main_wrapper">
+    <div id="inner_wrapper">
+      <!--
+        START CUSTOM CONTENT
+      -->
+      <div class="custom_header"><h1>Walters v. OpenAI</h1>
+<p>
+Use one (or more) of the case-aware workflows below to engage with this week's case materials: (1) the <a href="https://lawrpg.org/2024/ai-and-the-law/cases/walters/walters-complaint.pdf" target="_blank">complaint</a>; and (2) the <a href="https://lawrpg.org/2024/ai-and-the-law/cases/walters/walters-motion_to_dismiss.pdf" target="_blank">motion to dismiss</a>. If you choose Socrates or Moot, you'll want to read through them first, and if you use Distill & Question, you'll need to read them afterward. Every student has to turn in a transcript for at least one case interaction. If you've been assigned as an attorney to this case, you must turn in a transcript of your MOOT. 
+</p>
+<p>
+Additionally, every student must turn in a transcript of their Weekly Reflection. Remember, absence of evidence will be taken as evidence of absence. "If you don't mention it, it didn't happen." 
+</p>
+<p>
+<a href="https://lawrpg.org/2024/ai-and-the-law/#wk04" target="_blank">See Week Four of AI &amp; the Law</a>
+</p>
+<hr></div>
+      <!--
+        END CUSTOM CONTENT
+      -->
+      <div id="button_list"></div>
+      <div id="transcript" style="display:none;">
+        <div id="output_window"></div>
+      </div>
+      <div id="thinking_box">
+        <div id="thinking"></div>
+      </div>
+      <div id="text_input" style="display:none;">
+        <textarea id="user_input"></textarea>
+        <button id="send">Send</button>
+        <button id="restartButton_companion">Restart</button>
+      </div>
+      <div id="chat_text_input" style="display:none;">
+        <textarea id="chat_user_input"></textarea>
+        <button id="chat_send" >Send</button>
+        <button id="restartButton_companion_chat">Restart</button>
+      </div>
+      <div id="continue_gen" style="display:none;">
+        <button id='continueButton'>Continue text generation</button>
+      </div>
+      <a href="#" id="save_transcript">save transcript</a>
+      <button id="restartButton">Restart</button>
+      <div id="credentials" style="display:none;">
+        <table id="credentials_table">
+          <tr><td>API&nbsp;Base:&nbsp;</td><td width="100%"><input id="api_base" style="width:100%"></td></tr>
+          <tr><td>API&nbsp;Key:&nbsp;</td><td width="100%"><input id="api_key" style="width:100%"></td></tr>
+        </table>        
+        <button id='credentialsButton'>Update/Save Credentials</button>
+      </div>
+      <div id="choices" style="display:none;">
+        <select id="toPrompt" style="width:100%;margin:5px 0 8px 0;text-align:center;">
+          <option value="">Pass output to prompt (choose one)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <button id="config">Templates &amp; Settings</button>
+    <button id="scratch">Scratch Pad</button>
+    <span style="float:right">
+      <button id="about">About</button>
+      <button id="feedback">Feedback</button>
+    </span>
+  </div>
+</body>
+</html>

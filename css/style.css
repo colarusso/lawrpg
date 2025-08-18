@@ -12,10 +12,8 @@ body {
 .conversation {
 	margin:0px auto 0 auto;
 	padding:0 15px;
-	max-width:600px
+	max-width:900px
 }
-
-
 
 #icon {
 	z-index:2;
@@ -143,6 +141,45 @@ hr {
 	font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
 		box-sizing: border-box;
 }
+
+.profile_vid {
+	box-sizing: border-box;
+	float:left;
+	margin:0px 0px 15px 0;
+	width:900px;
+	height:510px;
+}
+
+.vid_wrapper {
+	box-sizing: border-box;
+	float:left;
+	padding-bottom:25px;
+}
+
+.embed_vid {
+	box-sizing: border-box;
+	background:black;
+	background-size: 900px 510px;
+	width:900px;
+	height:510px;
+}
+
+@media only screen and (max-width: 900px) {
+	.vid_wrapper {
+		position:relative;
+		width:100%;
+	}
+	.profile_vid {
+		float:none;
+		width:100%;
+	}
+	.embed_vid {
+		float:none;
+		width:100%;
+		background-size: 100% 510px;
+	}
+}
+
 
 .footer_links {
 	float:right;
